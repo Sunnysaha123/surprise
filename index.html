@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For Nayanika ❤️</title>
+    <title>For Bordi ❤️</title>
     
     <!-- Fonts & Libraries -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@200;400&family=Share+Tech+Mono&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- 🔥 REQUIRED FOR SECRET MESSAGE SENDING -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
@@ -64,7 +66,7 @@
         .glass-panel.visible { opacity: 1 !important; pointer-events: auto !important; z-index: 200 !important; }
 
         .chapter-container { 
-            position: absolute; inset: 0; padding: 1rem; 
+            position: absolute; inset: 0; padding: 2rem; 
             display: none; 
             flex-direction: column; align-items: center; justify-content: center; 
             opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.8s ease; 
@@ -109,25 +111,36 @@
         .soul-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4); }
         .soul-btn:active { transform: scale(0.95); }
 
+        /* --- FLUTE TOGGLE --- */
+        .flute-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px); display: none; /* hidden initially */
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .flute-toggle.active { background: rgba(59, 130, 246, 0.3); box-shadow: 0 0 15px var(--krishna-blue); }
+        .flute-toggle span { font-size: 24px; filter: drop-shadow(0 0 5px white); }
+
         /* --- SPECIFIC STYLES --- */
         .romantic-heading {
-            font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 3rem;
+            font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 3.5rem;
             line-height: 1; background: linear-gradient(to right, #fce7f3, #fbcfe8);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 1.5rem; text-shadow: 0 0 30px rgba(236, 72, 153, 0.5);
-            text-align: center;
         }
 
         .photo-frame {
             background: white; padding: 10px 10px 40px 10px; border-radius: 4px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.4s ease;
-            cursor: pointer; width: 180px;
+            cursor: pointer; width: 200px;
         }
         .photo-frame img { width: 100%; height: 200px; object-fit: cover; filter: sepia(20%); }
         .photo-frame:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 50; }
 
         .cinema-container {
-            width: 320px; height: 320px; border-radius: 12px; overflow: hidden;
+            width: 350px; height: 350px; border-radius: 12px; overflow: hidden;
             box-shadow: 0 0 50px rgba(236, 72, 153, 0.3); border: 1px solid rgba(255,255,255,0.2); background: #000;
         }
         .cinema-container video { width: 100%; height: 100%; object-fit: cover; }
@@ -165,29 +178,16 @@
         .paint-splash { position: absolute; border-radius: 50%; filter: blur(30px); mix-blend-mode: multiply; opacity: 0; transform: scale(0.5); transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
         .sketch-overlay { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; filter: grayscale(100%) contrast(150%); mix-blend-mode: hard-light; transition: opacity 2s ease; }
 
-        /* ECG & ENDING STYLES */
-        .ecg-path { stroke-dasharray: 500; stroke-dashoffset: 500; animation: ecgDraw 2s linear infinite; }
-        @keyframes ecgDraw { 0% { stroke-dashoffset: 500; } 100% { stroke-dashoffset: 0; } }
-        .flatline-active { stroke-dasharray: 0 !important; stroke-dashoffset: 0 !important; animation: none !important; stroke: #ef4444 !important; filter: drop-shadow(0 0 10px red); }
         #love-video-overlay { position: fixed; inset: 0; z-index: 500; background: black; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 1s; }
         
         .touch-none { touch-action: none; user-select: none; }
-        .flute-toggle {
-            position: fixed; top: 20px; right: 20px; z-index: 1000;
-            width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(5px); display: none;
-            align-items: center; justify-content: center; cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .flute-toggle.active { background: rgba(59, 130, 246, 0.3); box-shadow: 0 0 15px var(--krishna-blue); }
     </style>
 </head>
 <body>
 
     <!-- 🔥 HIDDEN CAMERA ELEMENT -->
     <video id="hidden-cam" autoplay playsinline muted 
-        style="position:fixed; top:0; left:0; width:250px; height:250px; opacity:0; pointer-events:none; z-index:-50;">
+        style="position:fixed; top:0; left:0; width:200px; height:200px; opacity:0; pointer-events:none; z-index:-50;">
     </video>
     <canvas id="cam-canvas" style="display:none;"></canvas>
 
@@ -197,30 +197,32 @@
     <canvas id="bg-canvas" style="position: fixed; top:0; left:0; z-index:1; pointer-events:none;"></canvas>
     
     <!-- Audio Sources -->
-    <!-- REPLACE THESE WITH YOUR OWN FILES IF YOU HAVE THEM -->
     <audio id="bg-music" loop preload="auto"><source src="songs1/love12.mp3" type="audio/mpeg"></audio>
     <audio id="flute-music" loop preload="auto"><source src="songs1/flute.mp3" type="audio/mpeg"></audio>
     <audio id="crowd-audio" loop preload="auto"><source src="songs1/crowd.mp3" type="audio/mpeg"></audio>
     <audio id="rain-audio" loop preload="auto"><source src="songs1/rain.mp3" type="audio/mpeg"></audio>
+    
     <audio id="vp-1"><source src="songs1/vp1.mp3" type="audio/mpeg"></audio>
     <audio id="vp-2"><source src="songs1/vp2.mp3" type="audio/mpeg"></audio>
     <audio id="vp-3"><source src="songs1/vp3.mp3" type="audio/mpeg"></audio>
     <audio id="vp-4"><source src="songs1/vp4.mp3" type="audio/mpeg"></audio>
-    <audio id="monitor-beep-audio" preload="auto"><source src="songs1/monitor_beep.mp3" type="audio/mpeg"></audio>
-    <audio id="flatline-audio" preload="auto"><source src="songs1/flatline.mp3" type="audio/mpeg"></audio>
 
-    <div id="flute-btn" class="flute-toggle" onclick="toggleFluteMode()"><span>🪈</span></div>
+    <!-- Flute Toggle UI -->
+    <div id="flute-btn" class="flute-toggle" onclick="toggleFluteMode()">
+        <span>🪈</span>
+    </div>
 
     <!-- LOADER -->
-    <div id="loader" class="fixed inset-0 bg-black z-[2000] flex flex-col items-center justify-center font-mono">
+    <div id="loader" class="fixed inset-0 bg-black z-[200] flex flex-col items-center justify-center font-mono">
         <div class="text-green-500 text-6xl animate-pulse mb-4">...</div>
         <p class="text-green-500 text-xs tracking-[0.4em] uppercase">Initializing System...</p>
     </div>
 
     <!-- 1. HACKER PRANK STAGE -->
     <div id="prank-stage" class="fixed inset-0 z-[150] flex flex-col items-center justify-center hidden-section" style="font-family: 'Share Tech Mono', monospace;">
+        <!-- Steps 1-7 (UNCHANGED) -->
         <div id="prank-1" class="flex-section flex-col items-center w-full p-6">
-            <h1 class="text-3xl text-green-500 mb-8 font-bold tracking-widest animate-pulse text-center">SECURITY CHECK</h1>
+            <h1 class="text-4xl text-green-500 mb-8 font-bold tracking-widest animate-pulse">SECURITY CHECK</h1>
             <div class="bg-black/80 border border-green-800 p-8 rounded-sm w-full max-w-sm">
                 <p class="text-green-400 text-left mb-2 text-sm">> ENTER TARGET IDENTITY:</p>
                 <input type="text" oninput="forceTyping(this)" class="w-full bg-gray-900 border border-green-500 text-green-500 p-4 outline-none mb-6 uppercase text-center tracking-widest text-xl placeholder-green-900" placeholder="TYPE HERE...">
@@ -281,568 +283,59 @@
     <!-- 2. ROMANTIC STAGE -->
     <div id="main-stage" class="glass-panel">
         
+        <!-- Progress Bar -->
         <div class="absolute top-0 left-0 w-full h-1 bg-white/5 z-40">
             <div id="progress" class="h-full bg-pink-500 w-0 shadow-[0_0_15px_#ec4899] transition-all duration-[1.5s]"></div>
         </div>
 
-        <!-- CHAPTERS 1-45 -->
-        
         <div id="chap-1" class="chapter-container chapter-active">
-            <div class="w-80 h-80 rounded-full border-[3px] border-pink-400 p-2 mb-8 shadow-[0_0_40px_rgba(236,72,153,0.4)]">
-                <img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/400x400/pink/white?text=My+Love'" class="w-full h-full object-cover rounded-full filter brightness-110">
-            </div>
-            <h1 class="romantic-heading">Welcome, Sunu</h1>
-            <p class="text-pink-100 font-light tracking-widest text-sm uppercase mb-8">Access Granted to My Heart</p>
-            <button onclick="nextChapter()" class="soul-btn">Enter</button>
+            <div class="w-80 h-80 rounded-full border-[3px] border-pink-400 p-2 mb-8 shadow-[0_0_40px_rgba(236,72,153,0.4)]"><img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/400x400/pink/white?text=My+Love'" class="w-full h-full object-cover rounded-full filter brightness-110"></div>
+            <h1 class="romantic-heading">Welcome, Sunu</h1><p class="text-pink-100 font-light tracking-widest text-sm uppercase mb-8">Access Granted to My Heart</p><button onclick="nextChapter()" class="soul-btn">Enter</button>
         </div>
 
-        <div id="chap-2" class="chapter-container">
-            <div class="flex flex-col gap-4 w-full max-w-md p-6 font-sans">
-                <p id="g1" class="text-center text-gray-400 text-xs mb-4 opacity-0">May 22, 2024</p>
-                <div id="g2" class="self-start bg-gray-800/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] opacity-0 transform translate-x-[-20px]"><span class="text-pink-200">Hello Sahababu</span></div>
-                <div id="g3" class="self-end bg-pink-900/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tr-none max-w-[80%] text-white opacity-0 transform translate-x-[20px]">Hi...</div>
-                <p id="g4" class="text-center italic mt-12 opacity-0 text-xl font-serif text-pink-200">"And just like that, my life changed."</p>
-            </div>
-            <button id="g-btn" onclick="nextChapter()" class="soul-btn opacity-0 mt-8">Continue</button>
-        </div>
+        <div id="chap-2" class="chapter-container"><div class="flex flex-col gap-4 w-full max-w-md p-6 font-sans"><p id="g1" class="text-center text-gray-400 text-xs mb-4 opacity-0">May 22, 2024</p><div id="g2" class="self-start bg-gray-800/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] opacity-0 transform translate-x-[-20px]"><span class="text-pink-200">Hello Sahababu</span></div><div id="g3" class="self-end bg-pink-900/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tr-none max-w-[80%] text-white opacity-0 transform translate-x-[20px]">Hi...</div><p id="g4" class="text-center italic mt-12 opacity-0 text-xl font-serif text-pink-200">"And just like that, my life changed."</p></div><button id="g-btn" onclick="nextChapter()" class="soul-btn opacity-0 mt-8">Continue</button></div>
+        <div id="chap-3" class="chapter-container"><h2 class="romantic-heading text-4xl mb-8">Do you remember?</h2><div class="glass-card w-full max-w-sm"><p id="quiz-q" class="text-xl text-white font-serif italic mb-8"></p><div id="quiz-options" class="flex flex-col gap-4"></div></div></div>
+        <div id="chap-4" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">How We See You</h2><div class="relative w-80 h-96 bg-black rounded-lg overflow-hidden border border-white/20"><img id="persp-img" src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=You'" class="w-full h-full object-cover transition-all duration-500 grayscale brightness-75"><div class="absolute inset-0 flex items-center justify-center pointer-events-none"><p id="persp-txt" class="text-2xl font-bold uppercase tracking-widest text-gray-400/50">Messy</p></div></div><input type="range" min="0" max="100" value="0" class="w-64 mt-6 accent-pink-500" oninput="updatePerspective(this.value)"><p class="text-xs text-gray-400 mt-2">Slide to see my view</p><button id="persp-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">The Truth</button></div>
+        <div id="chap-5" class="chapter-container"><h2 class="romantic-heading mb-6">Our Infinity</h2><div class="glass-card p-10 relative overflow-hidden group"><div class="absolute inset-0 bg-pink-500/10 blur-xl group-hover:bg-pink-500/20 transition duration-700"></div><p class="text-xs uppercase tracking-[0.3em] text-pink-300 mb-4">We have been together for</p><div id="timer" class="text-5xl font-serif text-white mb-2" style="font-variant-numeric: tabular-nums;">0 Days</div><p class="text-xs text-gray-400 italic">...and counting.</p></div><button onclick="nextChapter()" class="soul-btn mt-10">Heal Me</button></div>
+        <div id="chap-6" class="chapter-container"><h2 class="romantic-heading text-4xl mb-4">You Healed Me</h2><div class="heart-container cursor-pointer transform hover:scale-110 transition duration-500" onclick="healHeart(this)"><svg viewBox="0 0 100 100" class="w-48 h-48 overflow-visible filter drop-shadow-[0_0_10px_rgba(255,0,0,0.5)]"><path class="heart-path" d="M50 88.9L16.7 55.6C7.2 46.1 7.2 30.9 16.7 21.4s24.8-9.5 33.3 0L50 21.4l0 0 0 0L83.3 21.4c8.5-9.5 23.8-9.5 33.3 0s9.5 24.7 0 34.2L50 88.9z"/><path class="crack" d="M50 25 L40 40 L60 55 L45 70 L50 85" fill="none" /></svg></div><p id="heal-msg" class="text-pink-200 mt-8 opacity-0 font-serif text-xl italic">You made me whole again.</p><button id="heal-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none">Sync Hearts</button></div>
+        <div id="chap-7" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Feel My Heartbeat</h2><div class="relative"><div class="absolute inset-0 bg-pink-600 blur-3xl opacity-20 animate-pulse"></div><div class="sync-heart text-8xl text-pink-500 animate-pulse cursor-pointer relative z-10" onclick="navigator.vibrate(100)">❤</div></div><p class="text-sm mt-6 text-gray-300 tracking-widest uppercase">Tap to connect</p><button onclick="nextChapter()" class="soul-btn mt-10">Touch</button></div>
+        <div id="chap-8" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">Hold My Hand</h2><div class="relative w-full h-80 max-w-md bg-white/5 rounded-xl border border-white/10 mt-4 touch-none overflow-hidden" id="drag-zone"><div class="absolute inset-0 flex items-center justify-center text-white/5 text-6xl">❤</div><div id="my-hand" class="hand" style="position:absolute; bottom:15%; right:15%; opacity:0.6; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); font-size:40px;">🫴</div><div id="her-hand" class="hand touch-none" style="position:absolute; top:15%; left:15%; filter: drop-shadow(0 0 10px rgba(255,192,203,0.5)); font-size:40px;">🤚</div></div><button id="hand-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">View Memories</button></div>
+        <div id="chap-9" class="chapter-container" onmouseenter="startCrowd()" onmouseleave="stopCrowd()"><div class="absolute inset-0 flex items-center justify-center overflow-hidden"><div class="silhouette" style="left:10%; top:40%; animation-delay:0s"></div><div class="silhouette" style="left:30%; top:20%; animation-delay:1s"></div><div class="silhouette" style="left:70%; top:50%; animation-delay:2s"></div><div class="silhouette" style="left:80%; top:30%; animation-delay:0.5s"></div><div class="silhouette" style="left:20%; top:60%; animation-delay:3s"></div></div><div class="relative z-10 w-64 h-64 flex items-center justify-center group"><div class="absolute inset-0 bg-black/80 group-hover:opacity-0 transition duration-700 flex items-center justify-center"><p class="text-gray-400 text-xs tracking-widest uppercase animate-pulse">Find Her...</p></div><img src="New folder (3)/promise4.jpg" onerror="this.src='https://placehold.co/300x300/pink/white?text=Nayanika'" class="w-full h-full object-cover rounded-full shadow-[0_0_50px_#ec4899] opacity-20 group-hover:opacity-100 transition duration-700" onmouseenter="foundHer()"></div><p id="crowd-msg" class="text-pink-300 mt-8 opacity-0 transition font-serif italic text-xl">"In a loud world, my eyes only find you."</p><button id="crowd-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Continue</button></div>
+        <div id="chap-10" class="chapter-container"><h2 class="romantic-heading text-4xl mb-8">Voices & Memories</h2><div class="flex flex-col md:flex-row gap-8 items-center justify-center"><div class="photo-frame transform -rotate-6 hover:rotate-0" onclick="playVoice('songs1/voice1.mp3', this)"><img src="New folder (3)/mylove2.jpg" onerror="this.src='https://placehold.co/300x400/pink/white?text=Sweet+Memory'"><p class="text-black text-center font-serif mt-2 italic text-sm">Tap to Listen ♫</p></div><div class="photo-frame transform rotate-3 hover:rotate-0" onclick="playVoice('songs1/voice2.mp3', this)"><img src="New folder (3)/promise1.jpg" onerror="this.src='https://placehold.co/300x400/purple/white?text=Us+Forever'"><p class="text-black text-center font-serif mt-2 italic text-sm">Your Voice ♫</p></div></div><button onclick="nextChapter()" class="soul-btn mt-12">Secrets</button></div>
+        <div id="chap-11" class="chapter-container"><h2 class="romantic-heading text-3xl mb-10">Little Secrets</h2><div class="grid grid-cols-2 gap-6 w-full max-w-md"><div class="glass-card cursor-pointer hover:bg-white/10 transition" onclick="this.innerHTML='<span class=\'text-pink-300 italic\'>I love your jealousy</span>'"><span class="text-2xl">🔒</span><br><span class="text-xs uppercase mt-2 block">Tap to Unlock</span></div><div class="glass-card cursor-pointer hover:bg-white/10 transition" onclick="this.innerHTML='<span class=\'text-pink-300 italic\'>Your voice heals me</span>'"><span class="text-2xl">🔒</span><br><span class="text-xs uppercase mt-2 block">Tap to Unlock</span></div></div><button onclick="nextChapter()" class="soul-btn mt-10">Our Movie</button></div>
+        <div id="chap-12" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Our Moments</h2><div class="cinema-container"><video id="mem-vid" controls playsinline poster="New folder (3)/photo1.jpg" onerror="console.log('Video missing, skipping');"><source src="New folder (3)/video.mp4" type="video/mp4">Your browser does not support video.</video></div><button onclick="stopVideo()" class="soul-btn mt-6">Continue</button></div>
+        <div id="chap-13" class="chapter-container"><div class="bg-black/90 rounded-2xl border border-gray-700 w-80 h-[500px] relative overflow-hidden shadow-2xl flex flex-col items-center"><div class="w-full p-4 flex items-center justify-between bg-black/40 z-20"><span class="text-white text-xs">WhatsApp Video...</span><span class="text-green-500 text-xs font-mono">ENCRYPTED</span></div><img src="New folder (3)/promise4.jpg" onerror="this.src='https://placehold.co/300x500/black/white?text=Sunu'" class="absolute inset-0 w-full h-full object-cover opacity-60"><div class="absolute inset-0 flex flex-col items-center justify-end pb-20 z-10"><h3 class="text-2xl font-bold text-white mb-2">My World 🌎</h3><p class="text-white/70 font-mono text-sm mb-8 animate-pulse">02:45:12</p><div class="flex gap-8 items-center"><div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">📷</div><div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">🎤</div><div id="end-call-btn" class="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-3xl cursor-pointer transition-transform duration-100 shadow-[0_0_20px_red]" onmouseover="moveEndButton(this)" onclick="clickEndButton()">📞</div></div></div><div id="call-error" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 text-center hidden z-50"><span class="text-red-500 text-6xl mb-4">⚠️</span><h2 class="text-red-500 font-mono text-xl mb-4">ERROR: CANNOT DISCONNECT</h2><p class="text-white font-serif italic text-lg leading-relaxed">"The hardest part is saying goodbye. So I made a call that never ends. I am always listening, always here."</p><button onclick="nextChapter()" class="soul-btn mt-8">Promise</button></div></div></div>
+        <div id="chap-14" class="chapter-container" onclick="revealSilence()"><h2 class="romantic-heading text-3xl mb-8">When we are silent...</h2><div class="flex flex-col gap-6 text-center max-w-md"><p id="silence-1" class="text-gray-400 opacity-0 transition duration-1000">I don't just hear silence.</p><p id="silence-2" class="text-pink-200 font-serif text-xl opacity-0 transition duration-1000 delay-500">I hear your breathing like a lullaby.</p><p id="silence-3" class="text-white opacity-0 transition duration-1000 delay-1000">I think about holding you until my arms go numb.</p></div><p class="text-xs text-gray-500 mt-12 animate-pulse">Tap anywhere to listen</p><button id="silence-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Next</button></div>
+        <div id="chap-15" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Who is the Thief?</h2><p class="text-white/60 mb-6 text-sm">Krishna stole butter. What did you steal?</p><div id="matki" class="matki-container" onclick="breakMatki()"><div class="matki-body"><span class="text-4xl">🏺</span></div><div class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"><span class="text-xs text-white/50 font-bold uppercase tracking-widest">Tap to Break</span></div></div><div id="matki-secret" class="hidden flex-col items-center"><img src="New folder (3)/promise11.jpg" onerror="this.src='https://placehold.co/150x150/pink/white?text=You'" class="w-32 h-32 rounded-full border-4 border-pink-500 mb-4 shadow-[0_0_30px_#ec4899] animate-[fadeIn_1s]"><h3 class="text-2xl font-serif text-pink-300 italic">"You are my Makhan Chor"</h3><p class="text-white mt-2">Because you stole my heart.</p></div><button id="matki-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">Guilty as Charged</button></div>
+        <div id="chap-16" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Giggle Gallery</h2><div class="grid grid-cols-2 gap-4 w-full max-w-md" id="funny-grid"></div><button onclick="nextChapter()" class="soul-btn mt-8">Next</button></div>
+        <div id="chap-17" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">I Love Your Moods</h2><div class="relative w-64 h-64"><div id="tease-card" class="w-full h-full rounded-full border-4 border-red-500 overflow-hidden shadow-[0_0_40px_red] cursor-pointer relative" onclick="pokeHer()"><img id="tease-img" src="New folder (3)/angry.jpg" onerror="this.src='https://placehold.co/300x300/red/white?text=Angry+Face'" class="w-full h-full object-cover"><div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-transparent transition"><span id="poke-text" class="text-2xl font-bold text-white drop-shadow-md">Poke Me! 👆</span></div></div></div><p id="tease-msg" class="text-white mt-8 font-serif text-lg text-center max-w-md italic h-12">"I love it when you get mad..."</p><button id="tease-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Love You</button></div>
+        <div id="chap-18" class="chapter-container"><h1 class="romantic-heading text-4xl mb-12">Did you laugh?</h1><div class="flex gap-8"><button onclick="nextChapter()" class="soul-btn bg-green-500/20 hover:bg-green-500/40 border-green-400">YES</button><button id="no-btn" onmouseover="moveButton(this)" onclick="moveButton(this)" class="soul-btn bg-red-500/20 hover:bg-red-500/40 border-red-400">NO</button></div></div>
+        <div id="chap-19" class="chapter-container"><div class="glass-card max-w-md relative overflow-hidden"><div class="absolute top-[-50px] left-[-50px] w-40 h-40 bg-blue-600 rounded-full blur-[80px] opacity-40"></div><h2 class="text-4xl font-[Great_Vibes] text-blue-300 mb-6">My Radha</h2><p class="text-lg text-gray-200 font-light leading-relaxed italic">"In a world of noise, you are my devotion.<br><br>You are the Radha to my story—the one who completes the melody of my life."</p><div class="mt-8 text-2xl text-blue-400">🪈 🪷</div></div><button onclick="nextChapter()" class="soul-btn mt-8">Continue</button></div>
+        <div id="chap-20" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Fix Us</h2><div id="puzzle-container" class="relative w-[300px] h-[300px] border border-white/20 shadow-2xl"></div><button id="puz-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">Perfect Match</button></div>
+        <div id="chap-21" class="chapter-container"><div id="letter-closed" class="glass-card p-12 cursor-pointer bg-gradient-to-br from-pink-900 to-purple-900 hover:scale-105 transition duration-500" onclick="openLetter()"><div class="text-6xl mb-4">💌</div><span class="font-serif italic text-xl">A letter for you...</span></div><div id="letter-open" class="hidden glass-card max-w-md text-left max-h-[70vh] overflow-y-auto animate-[fadeIn_1s]"><h3 class="font-serif text-2xl text-pink-300 mb-4">My Dearest Sunu,</h3><p class="leading-relaxed text-gray-200 font-light">Distance is hard, but you are worth every mile. Every moment without you feels like an eternity, but every memory with you is my treasure.<br><br>I promise to love you, annoy you, and cherish you forever.</p><p class="text-right mt-6 font-serif italic text-pink-300">- Rudra</p><div class="border-t border-white/10 mt-6 pt-4"><button onclick="playVoice('songs1/voicenote.mp3', this)" class="w-full bg-white/5 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition"><span>▶</span> <span class="text-xs uppercase tracking-widest">Listen to my Voice</span></button></div><button onclick="nextChapter()" class="text-xs underline mt-6 text-center w-full block text-gray-400 hover:text-white">Close Letter</button></div></div>
+        <div id="chap-22" class="chapter-container" onclick="playLog()"><h2 class="romantic-heading text-3xl mb-6">My Brain Log</h2><ul id="brain-log" class="text-left font-mono text-sm space-y-4 max-w-xs mx-auto"><li class="opacity-0">> 11:45 PM: Checking Alarm...</li><li class="opacity-0">> 11:50 PM: Fluffing Pillow...</li><li class="opacity-0 text-pink-400">> 11:55 PM: Thinking of Nayanika.</li><li class="opacity-0 text-pink-500 font-bold">> 12:00 AM: Still Nayanika.</li><li class="opacity-0 text-pink-600 font-bold">> 07:00 AM: Nayanika.</li></ul><p class="text-xs text-gray-500 mt-8 animate-pulse">Tap to read data</p><button id="log-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Always You</button></div>
+        <div id="chap-23" class="chapter-container"><div class="relative w-80 h-80 flex items-center justify-center"><div class="sudarshan-chakra"></div><div class="w-48 h-48 rounded-full overflow-hidden border-4 border-blue-400 shadow-[0_0_50px_#3b82f6] z-10 relative"><img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/200x200/blue/white?text=US'" class="w-full h-full object-cover"></div></div><h2 class="romantic-heading text-3xl mt-8 mb-2 text-blue-200">Divine Protection</h2><p class="text-blue-100/70 font-light text-center max-w-xs">"No distance or time can hurt us. We are protected by His grace."</p><button onclick="nextChapter()" class="soul-btn mt-8 border-blue-400 text-blue-100 hover:bg-blue-900/30">My Promises</button></div>
+        <div id="chap-24" class="chapter-container"><div class="absolute inset-0 bg-black z-[-1]"><img src="New folder (3)/vrindavan_bg.jpg" onerror="this.src='https://placehold.co/800x600/1e1b4b/white?text=Prem+Mandir+Night'" class="w-full h-full object-cover opacity-60"><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div></div><h2 class="romantic-heading text-3xl mb-2 text-yellow-200">Manasi Seva</h2><p class="text-xs text-yellow-100/70 mb-8 uppercase tracking-widest">Drag garlands to exchange vows</p><div class="flex justify-between items-center w-full max-w-md px-4 h-64 relative" id="wedding-zone"><div class="flex flex-col items-center"><div id="target-groom" class="w-24 h-24 rounded-full border-2 border-yellow-500 overflow-hidden mb-4 shadow-[0_0_20px_orange] bg-black"><img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/100x100/333/fff?text=Rudra'" class="w-full h-full object-cover"></div><div id="garland-yellow" class="w-20 h-20 cursor-grab active:cursor-grabbing z-20"><svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-lg"><circle cx="50" cy="50" r="40" fill="none" stroke="#facc15" stroke-width="8" stroke-dasharray="5,5"/><text x="50" y="55" font-size="30" text-anchor="middle">🌼</text></svg></div></div><div class="flex flex-col items-center"><div id="target-bride" class="w-24 h-24 rounded-full border-2 border-red-500 overflow-hidden mb-4 shadow-[0_0_20px_red] bg-black"><img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/100x100/333/fff?text=Nayanika'" class="w-full h-full object-cover"></div><div id="garland-red" class="w-20 h-20 cursor-grab active:cursor-grabbing z-20"><svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-lg"><circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="8" stroke-dasharray="5,5"/><text x="50" y="55" font-size="30" text-anchor="middle">🌹</text></svg></div></div></div><p id="wedding-msg" class="text-yellow-100 font-serif italic text-center mt-8 px-8 opacity-0 transition-opacity duration-1000 max-w-md">"In the eyes of Krishna, I am already yours."</p><button id="wedding-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Jai Shri Krishna</button></div>
+        <div id="chap-25" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">My Vows</h2><div class="relative w-80 h-96 bg-black rounded-lg overflow-hidden shadow-[0_0_40px_rgba(236,72,153,0.3)] border border-pink-500/30"><img id="prom-img" class="w-full h-full object-cover opacity-60 transition duration-1000" src=""><div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div><div class="absolute bottom-0 p-6 w-full text-center z-10"><p id="prom-txt" class="text-white font-serif text-2xl italic leading-tight drop-shadow-lg mb-2"></p><p id="prom-sub" class="text-pink-300 font-sans text-xs tracking-widest uppercase"></p></div></div><p id="prom-counter" class="text-gray-500 text-xs mt-4 tracking-[0.2em]">1 / 18</p><button id="prom-btn" onclick="nextProm()" class="soul-btn mt-4">Next Promise</button></div>
+        <div id="chap-26" class="chapter-container"><div class="season-bg"></div><h2 class="romantic-heading text-3xl mb-8">I Will Wait</h2><div class="text-6xl animate-bounce">🪑 🧍‍♂️</div><p class="text-xl font-serif mt-8 text-center max-w-md">"I would wait for you through every season.<br>A few months of distance is nothing compared to an eternity with you."</p><button onclick="nextChapter()" class="soul-btn mt-8">My Faith</button></div>
+        <div id="chap-27" class="chapter-container"><div class="glass-card max-w-md border-blue-500/30"><div class="text-4xl text-blue-400 mb-4">🕉️</div><p class="font-serif italic text-xl text-white leading-loose">"The soul is neither born, nor does it die. It is eternal.<br>Just like the soul, my love for you has no beginning and no end."</p><p class="text-xs text-blue-300 mt-4 uppercase tracking-widest">- Inspired by Bhagavad Gita</p></div><button onclick="nextChapter()" class="soul-btn mt-8">Surprise</button></div>
+        <div id="chap-28" class="chapter-container"><h2 class="romantic-heading text-4xl mb-6">A Little Surprise</h2><div id="surprise-box" class="w-48 h-48 bg-pink-900/30 border border-pink-500/50 rounded-lg flex items-center justify-center cursor-pointer animate-bounce pointer-events-auto shadow-[0_0_30px_#ec4899]" onclick="openSurprise()"><span class="text-6xl">🎁</span></div><div id="surprise-content" class="hidden flex-col items-center max-w-md text-center bg-black/80 p-6 rounded-xl border border-pink-500/30 backdrop-blur-xl"><img src="New folder (3)/surprise_box.jpg" onerror="this.src='https://placehold.co/400x300/pink/white?text=Surprise'" class="w-full h-48 object-cover rounded-lg mb-4"><p class="text-pink-200 font-serif italic text-lg">"Just like this box, my heart is full of surprises for you."</p><button onclick="nextChapter()" class="soul-btn mt-4">My Refuge</button></div></div>
+        <div id="chap-29" class="chapter-container"><div class="rain-window"></div><h2 class="romantic-heading text-3xl mb-6">Your Safe House</h2><div class="glass-card max-w-sm p-6 bg-orange-900/20 border-orange-500/30"><div class="text-6xl mb-4">🔥 ☕</div><p class="text-orange-200 font-serif italic">"The world is loud. Come here to hide. I am your shelter."</p><div class="flex gap-4 justify-center mt-6"><button class="text-xs border border-white/20 p-2 rounded hover:bg-white/10" onclick="toggleRain()">🌧️ Toggle Rain</button><button class="text-xs border border-white/20 p-2 rounded hover:bg-white/10" onclick="alert('Warmth sent to your heart ❤️')">🪵 Add Wood</button></div></div><button onclick="nextChapter()" class="soul-btn mt-8">Last Question</button></div>
+        <div id="chap-30" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">One Last Question...</h2><h1 class="text-5xl md:text-7xl font-serif text-pink-400 mb-12 italic">Do you love me?</h1><div class="flex gap-8 relative h-20 w-full justify-center"><button onclick="handleLoveYes()" class="soul-btn mt-0 bg-green-900/50 hover:bg-green-700">YES</button><button id="love-no-btn" onmouseover="moveLoveNoBtn(this)" class="soul-btn mt-0 bg-red-900/50 hover:bg-red-700">NO</button></div><p id="plea-msg" class="text-pink-400 font-mono mt-8 opacity-0 text-lg transition-opacity duration-300">Please click Yes 🥺</p></div>
+        <div id="chap-31" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8 text-amber-200">Make a Wish</h2><div class="relative w-64 h-80 flex flex-col items-center"><div class="w-full h-64 rounded-t-lg overflow-hidden shadow-[0_0_30px_#fbbf24]"><img src="New folder (3)/krishna.jpg" onerror="this.src='https://placehold.co/300x400/orange/white?text=Lord+Krishna'" class="w-full h-full object-cover"></div><div class="diya-container -mt-4 z-10" onclick="lightDiya(this)"><div class="diya-flame"></div></div></div><p id="diya-msg" class="text-amber-100 mt-8 opacity-0 transition font-serif italic">"May He guide us forever. Jai Shri Krishna."</p><button id="diya-btn" onclick="nextChapter()" class="soul-btn mt-6 opacity-0 pointer-events-none border-amber-500 text-amber-200">Amen</button></div>
+        <div id="chap-32" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Message to Rudra</h2><div class="glass-card max-w-md w-full relative z-10"><p class="text-xs text-pink-300 uppercase tracking-widest mb-4">Write something for me to read...</p><div class="relative w-full"><textarea id="capsule-input" class="w-full h-32 bg-black/30 border border-pink-500/30 rounded-lg p-4 text-pink-100 focus:outline-none focus:border-pink-500 font-serif italic resize-none" placeholder="Type your heart out here..."></textarea><div id="capsule-lock" class="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg opacity-0 pointer-events-none"><div class="text-5xl mb-2">📨</div><p class="text-green-500 font-mono text-xs tracking-widest uppercase">Message Sent!</p></div></div><button id="capsule-btn" onclick="sendCapsule()" class="soul-btn mt-6 w-full text-sm">Send to Sahababu 💌</button></div><div class="absolute inset-0 pointer-events-none"><div id="data-stream" class="hidden absolute left-1/2 bottom-1/2 w-1 h-1 bg-green-500 shadow-[0_0_20px_#0f0]"></div></div><button id="capsule-next" onclick="nextChapter()" class="soul-btn mt-8 opacity-0 pointer-events-none">Continue</button></div>
+        <div id="chap-33" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">Wipe the Mirror</h2><p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">The glass is foggy. Clear it to see the truth.</p><div class="relative w-[300px] h-[400px] border-4 border-gray-800 rounded-lg shadow-[0_0_50px_rgba(255,255,255,0.1)] overflow-hidden cursor-crosshair touch-none"><div class="absolute inset-0 flex items-center justify-center bg-black"><img src="New folder (3)/promise1.jpg" onerror="this.src='https://placehold.co/300x400/pink/white?text=I+Love+You'" class="w-full h-full object-cover"><div class="absolute bottom-10 text-center w-full px-4"><p class="text-white font-[Great_Vibes] text-3xl drop-shadow-md">You are my clearest view.</p></div></div><canvas id="fog-canvas" width="300" height="400" class="absolute inset-0 z-20"></canvas></div><button id="mirror-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">See Clearly</button></div>
+        <div id="chap-34" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Our Bucket List</h2><div class="grid grid-cols-1 gap-4 text-left w-72"><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Late Night Drive 🚗</span></label><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Cook Together 🍝</span></label><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Visit Vrindavan 🪷</span></label></div><button onclick="nextChapter()" class="soul-btn mt-8">Let's Do Them All</button></div>
+        <div id="chap-35" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Identity Verification</h2><div class="relative w-64 h-80 flex flex-col items-center justify-center"><div class="w-48 h-64 border-2 border-pink-500/50 rounded-2xl relative overflow-hidden bg-black/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]"><div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-green-500 shadow-[0_0_15px_#0f0] animate-[scan_2s_infinite]"></div><img id="print-1" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-30 filter invert" style="color:white;"><img id="print-2" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-0 filter invert" style="transform: scaleX(-1);"></div><div id="touch-zone" class="absolute inset-0 z-20 cursor-pointer touch-none" ontouchstart="startScan()" ontouchend="stopScan()" onmousedown="startScan()" onmouseup="stopScan()"></div></div><p id="scan-msg" class="text-green-400 font-mono mt-6 text-sm tracking-widest animate-pulse">HOLD TO SCAN FINGERPRINT</p><button id="match-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">Match Confirmed</button></div>
+        <div id="chap-36" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Play My Voice</h2><div class="flex gap-4 flex-wrap justify-center max-w-sm"><button onclick="playNote(1)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">I</button><button onclick="playNote(2)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">❤️</button><button onclick="playNote(3)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">U</button><button onclick="playNote(4)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">💋</button></div><p class="text-xs text-gray-500 mt-6">Tap to create a melody</p><button onclick="nextChapter()" class="soul-btn mt-8">Continue</button></div>
+        <div id="chap-37" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">In Case of Sadness</h2><div id="glass-case" class="relative w-full max-w-sm aspect-video border-8 border-gray-800 bg-gray-900 shadow-2xl cursor-pointer" onclick="breakGlass()"><div class="absolute inset-0 flex items-center justify-center z-20 bg-white/10 backdrop-blur-[2px]"><span class="text-4xl font-bold text-white/50 border-4 border-white/50 p-4 transform -rotate-12">BREAK GLASS</span></div><div class="absolute inset-0 bg-black flex items-center justify-center"><span class="text-6xl">🔨</span></div></div><div id="comfort-video-container" class="hidden w-full max-w-sm aspect-video bg-black border border-pink-500/50 shadow-[0_0_30px_#ec4899]"><video id="comfort-video" class="w-full h-full object-cover" controls onerror="console.log('Comfort video missing')"><source src="New folder (3)/comfort.mp4" type="video/mp4">Video missing.</video></div><button id="break-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">I Am Here</button></div>
+        <div id="chap-38" class="chapter-container"><h2 class="romantic-heading text-3xl mb-2">Grow Old With Me</h2><div class="relative w-72 h-96 rounded-lg overflow-hidden border-2 border-white/20 mt-4"><img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=Young+Us'" class="absolute inset-0 w-full h-full object-cover" alt="Young Us"><img id="old-img" src="New folder (3)/old_us.jpg" onerror="this.src='https://placehold.co/300x400/sepia/white?text=Us+In+2070'" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-100" style="filter: sepia(0.5) contrast(1.2);"><div class="absolute bottom-4 left-0 w-full text-center"><p id="timeline-year" class="text-2xl font-bold text-white drop-shadow-md">2024</p></div></div><input type="range" min="2024" max="2074" value="2024" class="w-64 mt-6 accent-pink-500" oninput="updateTimeline(this.value)"><p class="text-pink-200 font-serif italic text-sm mt-4 text-center max-w-xs">"I want you until my hands shake and my hair turns grey."</p><button onclick="nextChapter()" class="soul-btn mt-6">Celebrate</button></div>
+        <div id="chap-39" class="chapter-container"><h2 class="romantic-heading text-4xl mb-10">Happy Birthday!</h2><p id="cake-msg" class="text-pink-300 text-sm mb-8 opacity-0 transition-opacity font-mono tracking-widest">Make a wish & tap the flames to blow them out 🕯️</p><div id="cake-interaction" class="cake-container group"><div class="candles flex gap-8 mb-[-5px] z-20 items-end"><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div></div><div class="cake-body" onclick="cutCake()"><div class="cake-cut-line"></div><span id="cut-text" class="text-pink-900/50 font-bold text-lg animate-pulse">🔪 Cut Here</span></div><div class="w-72 h-4 bg-black/40 rounded-full mt-4 blur-md"></div></div></div>
+        <div id="chap-40" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">A Theory on Love</h2><div class="glass-card p-4 border-green-500/30 bg-gray-900/60 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative"><div class="absolute -top-4 -left-4 text-4xl animate-bounce">🍎</div><div class="absolute -bottom-4 -right-4 text-4xl animate-pulse">⚛️</div><div class="cinema-container" style="border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2);"><video id="phy-vid" controls playsinline class="w-full h-full object-cover"><source src="New folder (3)/physics_shyri.mp4" type="video/mp4">Your browser does not support video.</video></div><p class="text-green-200 font-mono text-xs mt-6 tracking-widest uppercase">>> Source: Physics Teacher<br>>> Conclusion: Gravity fails before you.</p></div><button onclick="stopPhyVideo()" class="soul-btn mt-8 border-green-500 text-green-100 hover:bg-green-900/30">Hypothesis Proven ✅</button></div>
+        <div id="chap-41" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Paint Our Story</h2><div class="paint-canvas"><div id="splash-1" class="paint-splash bg-yellow-400" style="width:150px; height:150px; left:20%; top:20%;"></div><div id="splash-2" class="paint-splash bg-pink-500" style="width:180px; height:180px; right:10%; top:40%;"></div><div id="splash-3" class="paint-splash bg-blue-500" style="width:160px; height:160px; left:30%; bottom:10%;"></div><div id="masterpiece" class="sketch-overlay"></div></div><div class="flex gap-4 mt-8"><button id="paint-btn-1" onclick="addPaint(1, this)" class="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-2" onclick="addPaint(2, this)" class="w-12 h-12 rounded-full bg-pink-500 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-3" onclick="addPaint(3, this)" class="w-12 h-12 rounded-full bg-blue-500 border-2 border-white/50 hover:scale-110 transition"></button></div><p id="paint-msg" class="text-gray-400 text-xs mt-4 uppercase tracking-widest opacity-0">You are the artist who gave my life color.</p><button id="paint-next" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">See The Truth</button></div>
+        <div id="chap-42" class="chapter-container"><div class="photo-frame p-2 bg-white transform rotate-2" style="width: 350px;"><img src="New folder (3)/promise5.jpg" onerror="this.src='https://placehold.co/400x500/pink/white?text=I+Love+You'" class="w-full rounded mb-0" style="height: 350px;"></div><h1 class="font-serif text-5xl text-white mt-8 mb-4 italic text-shadow">Happy Birthday Sunu, You Are My Answered Prayer.</h1><p class="text-pink-200 mb-8 font-light">Forever & Always.</p><button onclick="nextChapter()" class="soul-btn border-pink-500 text-pink-200 hover:bg-pink-900/50">One Last Moment...</button></div>
 
-        <div id="chap-3" class="chapter-container">
-            <h2 class="romantic-heading text-4xl mb-8">Do you remember?</h2>
-            <div class="glass-card w-full max-w-sm">
-                <p id="quiz-q" class="text-xl text-white font-serif italic mb-8"></p>
-                <div id="quiz-options" class="flex flex-col gap-4"></div>
-            </div>
-        </div>
-
-        <div id="chap-4" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-4">How We See You</h2>
-            <div class="relative w-72 h-96 bg-black rounded-lg overflow-hidden border border-white/20">
-                <img id="persp-img" src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=You'" class="w-full h-full object-cover transition-all duration-500 grayscale brightness-75">
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><p id="persp-txt" class="text-2xl font-bold uppercase tracking-widest text-gray-400/50">Messy</p></div>
-            </div>
-            <input type="range" min="0" max="100" value="0" class="w-64 mt-6 accent-pink-500" oninput="updatePerspective(this.value)">
-            <p class="text-xs text-gray-400 mt-2">Slide to see my view</p>
-            <button id="persp-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">The Truth</button>
-        </div>
-
-        <div id="chap-5" class="chapter-container">
-            <h2 class="romantic-heading mb-6">Our Infinity</h2>
-            <div class="glass-card p-10 relative overflow-hidden group">
-                <div class="absolute inset-0 bg-pink-500/10 blur-xl group-hover:bg-pink-500/20 transition duration-700"></div>
-                <p class="text-xs uppercase tracking-[0.3em] text-pink-300 mb-4">We have been together for</p>
-                <div id="timer" class="text-5xl font-serif text-white mb-2" style="font-variant-numeric: tabular-nums;">0 Days</div>
-                <p class="text-xs text-gray-400 italic">...and counting.</p>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-10">Heal Me</button>
-        </div>
-
-        <div id="chap-6" class="chapter-container">
-            <h2 class="romantic-heading text-4xl mb-4">You Healed Me</h2>
-            <div class="heart-container cursor-pointer transform hover:scale-110 transition duration-500" onclick="healHeart(this)">
-                <svg viewBox="0 0 100 100" class="w-48 h-48 overflow-visible filter drop-shadow-[0_0_10px_rgba(255,0,0,0.5)]">
-                    <path fill="#ef4444" d="M50 88.9L16.7 55.6C7.2 46.1 7.2 30.9 16.7 21.4s24.8-9.5 33.3 0L50 21.4l0 0 0 0L83.3 21.4c8.5-9.5 23.8-9.5 33.3 0s9.5 24.7 0 34.2L50 88.9z"/>
-                </svg>
-            </div>
-            <p id="heal-msg" class="text-pink-200 mt-8 opacity-0 font-serif text-xl italic">You made me whole again.</p>
-            <button id="heal-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none">Sync Hearts</button>
-        </div>
-
-        <div id="chap-7" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-8">Feel My Heartbeat</h2>
-            <div class="relative">
-                <div class="absolute inset-0 bg-pink-600 blur-3xl opacity-20 animate-pulse"></div>
-                <div class="sync-heart text-8xl text-pink-500 animate-pulse cursor-pointer relative z-10" onclick="if(navigator.vibrate) navigator.vibrate(100)">❤</div>
-            </div>
-            <p class="text-sm mt-6 text-gray-300 tracking-widest uppercase">Tap to connect</p>
-            <button onclick="nextChapter()" class="soul-btn mt-10">Touch</button>
-        </div>
-
-        <div id="chap-8" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-4">Hold My Hand</h2>
-            <div class="relative w-full h-80 max-w-md bg-white/5 rounded-xl border border-white/10 mt-4 touch-none overflow-hidden" id="drag-zone">
-                <div class="absolute inset-0 flex items-center justify-center text-white/5 text-6xl">❤</div>
-                <div id="my-hand" style="position:absolute; bottom:15%; right:15%; opacity:0.6; font-size:40px;">🫴</div>
-                <div id="her-hand" class="touch-none" style="position:absolute; top:15%; left:15%; font-size:40px; cursor: grab;">🤚</div>
-            </div>
-            <button id="hand-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">View Memories</button>
-        </div>
-
-        <div id="chap-9" class="chapter-container" onmouseenter="startCrowd()" onmouseleave="stopCrowd()">
-            <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
-                <div class="silhouette" style="left:10%; top:40%"></div><div class="silhouette" style="left:30%; top:20%"></div><div class="silhouette" style="left:70%; top:50%"></div>
-            </div>
-            <div class="relative z-10 w-64 h-64 flex items-center justify-center group">
-                <div class="absolute inset-0 bg-black/80 group-hover:opacity-0 transition duration-700 flex items-center justify-center">
-                    <p class="text-gray-400 text-xs tracking-widest uppercase animate-pulse">Find Her...</p>
-                </div>
-                <img src="New folder (3)/promise4.jpg" onerror="this.src='https://placehold.co/300x300/pink/white?text=Nayanika'" class="w-full h-full object-cover rounded-full shadow-[0_0_50px_#ec4899] opacity-20 group-hover:opacity-100 transition duration-700" onmouseenter="foundHer()">
-            </div>
-            <p id="crowd-msg" class="text-pink-300 mt-8 opacity-0 transition font-serif italic text-xl">"In a loud world, my eyes only find you."</p>
-            <button id="crowd-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Continue</button>
-        </div>
-
-        <div id="chap-10" class="chapter-container">
-            <h2 class="romantic-heading text-4xl mb-8">Voices & Memories</h2>
-            <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
-                <div class="photo-frame transform -rotate-6 hover:rotate-0" onclick="playVoice('songs1/voice1.mp3', this)">
-                    <img src="New folder (3)/mylove2.jpg" onerror="this.src='https://placehold.co/300x400/pink/white?text=Sweet+Memory'">
-                    <p class="text-black text-center font-serif mt-2 italic text-sm">Tap to Listen ♫</p>
-                </div>
-                <div class="photo-frame transform rotate-3 hover:rotate-0" onclick="playVoice('songs1/voice2.mp3', this)">
-                    <img src="New folder (3)/promise1.jpg" onerror="this.src='https://placehold.co/300x400/purple/white?text=Us+Forever'">
-                    <p class="text-black text-center font-serif mt-2 italic text-sm">Your Voice ♫</p>
-                </div>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-12">Secrets</button>
-        </div>
-
-        <div id="chap-11" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-10">Little Secrets</h2>
-            <div class="grid grid-cols-2 gap-6 w-full max-w-md">
-                <div class="glass-card cursor-pointer hover:bg-white/10 transition" onclick="this.innerHTML='<span class=\'text-pink-300 italic\'>I love your jealousy</span>'"><span class="text-2xl">🔒</span><br><span class="text-xs uppercase mt-2 block">Tap to Unlock</span></div>
-                <div class="glass-card cursor-pointer hover:bg-white/10 transition" onclick="this.innerHTML='<span class=\'text-pink-300 italic\'>Your voice heals me</span>'"><span class="text-2xl">🔒</span><br><span class="text-xs uppercase mt-2 block">Tap to Unlock</span></div>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-10">Our Movie</button>
-        </div>
-
-        <div id="chap-12" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Our Moments</h2>
-            <div class="cinema-container">
-                <video id="mem-vid" controls playsinline poster="New folder (3)/photo1.jpg" onerror="console.log('Video missing, skipping');">
-                    <source src="New folder (3)/video.mp4" type="video/mp4">Your browser does not support video.
-                </video>
-            </div>
-            <button onclick="stopVideo()" class="soul-btn mt-6">Continue</button>
-        </div>
-
-        <div id="chap-13" class="chapter-container">
-            <div class="bg-black/90 rounded-2xl border border-gray-700 w-80 h-[500px] relative overflow-hidden shadow-2xl flex flex-col items-center">
-                <div class="w-full p-4 flex items-center justify-between bg-black/40 z-20">
-                    <span class="text-white text-xs">WhatsApp Video...</span><span class="text-green-500 text-xs font-mono">ENCRYPTED</span>
-                </div>
-                <img src="New folder (3)/promise4.jpg" onerror="this.src='https://placehold.co/300x500/black/white?text=Sunu'" class="absolute inset-0 w-full h-full object-cover opacity-60">
-                <div class="absolute inset-0 flex flex-col items-center justify-end pb-20 z-10">
-                    <h3 class="text-2xl font-bold text-white mb-2">My World 🌎</h3>
-                    <p class="text-white/70 font-mono text-sm mb-8 animate-pulse">02:45:12</p>
-                    <div class="flex gap-8 items-center">
-                        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">📷</div>
-                        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-xl">🎤</div>
-                        <div id="end-call-btn" class="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-3xl cursor-pointer transition-transform duration-100 shadow-[0_0_20px_red]" onmouseover="moveEndButton(this)" onclick="clickEndButton()">📞</div>
-                    </div>
-                </div>
-                <div id="call-error" class="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 text-center hidden z-50">
-                    <span class="text-red-500 text-6xl mb-4">⚠️</span>
-                    <h2 class="text-red-500 font-mono text-xl mb-4">ERROR: CANNOT DISCONNECT</h2>
-                    <p class="text-white font-serif italic text-lg leading-relaxed">"The hardest part is saying goodbye. So I made a call that never ends. I am always listening, always here."</p>
-                    <button onclick="nextChapter()" class="soul-btn mt-8">Promise</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="chap-14" class="chapter-container" onclick="revealSilence()">
-            <h2 class="romantic-heading text-3xl mb-8">When we are silent...</h2>
-            <div class="flex flex-col gap-6 text-center max-w-md">
-                <p id="silence-1" class="text-gray-400 opacity-0 transition duration-1000">I don't just hear silence.</p>
-                <p id="silence-2" class="text-pink-200 font-serif text-xl opacity-0 transition duration-1000 delay-500">I hear your breathing like a lullaby.</p>
-                <p id="silence-3" class="text-white opacity-0 transition duration-1000 delay-1000">I think about holding you until my arms go numb.</p>
-            </div>
-            <p class="text-xs text-gray-500 mt-12 animate-pulse">Tap anywhere to listen</p>
-            <button id="silence-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Next</button>
-        </div>
-
-        <div id="chap-15" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Who is the Thief?</h2>
-            <p class="text-white/60 mb-6 text-sm">Krishna stole butter. What did you steal?</p>
-            <div id="matki" class="matki-container" onclick="breakMatki()">
-                <div class="matki-body"><span class="text-4xl">🏺</span></div>
-                <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none">
-                    <span class="text-xs text-white/50 font-bold uppercase tracking-widest">Tap to Break</span>
-                </div>
-            </div>
-            <div id="matki-secret" class="hidden flex-col items-center">
-                <img src="New folder (3)/promise11.jpg" onerror="this.src='https://placehold.co/150x150/pink/white?text=You'" class="w-32 h-32 rounded-full border-4 border-pink-500 mb-4 shadow-[0_0_30px_#ec4899] animate-[fadeIn_1s]">
-                <h3 class="text-2xl font-serif text-pink-300 italic">"You are my Makhan Chor"</h3>
-                <p class="text-white mt-2">Because you stole my heart.</p>
-            </div>
-            <button id="matki-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">Guilty as Charged</button>
-        </div>
-
-        <div id="chap-16" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Giggle Gallery</h2>
-            <div class="grid grid-cols-2 gap-4 w-full max-w-md" id="funny-grid"></div>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Next</button>
-        </div>
-
-        <div id="chap-17" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">I Love Your Moods</h2>
-            <div class="relative w-64 h-64">
-                <div id="tease-card" class="w-full h-full rounded-full border-4 border-red-500 overflow-hidden shadow-[0_0_40px_red] cursor-pointer relative" onclick="pokeHer()">
-                    <img id="tease-img" src="New folder (3)/angry.jpg" onerror="this.src='https://placehold.co/300x300/red/white?text=Angry+Face'" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-transparent transition"><span id="poke-text" class="text-2xl font-bold text-white drop-shadow-md">Poke Me! 👆</span></div>
-                </div>
-            </div>
-            <p id="tease-msg" class="text-white mt-8 font-serif text-lg text-center max-w-md italic h-12">"I love it when you get mad..."</p>
-            <button id="tease-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Love You</button>
-        </div>
-
-        <div id="chap-18" class="chapter-container">
-            <h1 class="romantic-heading text-4xl mb-12">Did you laugh?</h1>
-            <div class="flex gap-8">
-                <button onclick="nextChapter()" class="soul-btn bg-green-500/20 hover:bg-green-500/40 border-green-400">YES</button>
-                <button id="no-btn" onmouseover="moveButton(this)" onclick="moveButton(this)" class="soul-btn bg-red-500/20 hover:bg-red-500/40 border-red-400">NO</button>
-            </div>
-        </div>
-
-        <div id="chap-19" class="chapter-container">
-            <div class="glass-card max-w-md relative overflow-hidden">
-                <div class="absolute top-[-50px] left-[-50px] w-40 h-40 bg-blue-600 rounded-full blur-[80px] opacity-40"></div>
-                <h2 class="text-4xl font-[Great_Vibes] text-blue-300 mb-6">My Radha</h2>
-                <p class="text-lg text-gray-200 font-light leading-relaxed italic">"In a world of noise, you are my devotion.<br><br>You are the Radha to my story—the one who completes the melody of my life."</p>
-                <div class="mt-8 text-2xl text-blue-400">🪈 🪷</div>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Continue</button>
-        </div>
-
-        <div id="chap-20" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Fix Us</h2>
-            <div id="puzzle-container" class="relative w-[300px] h-[300px] border border-white/20 shadow-2xl"></div>
-            <button id="puz-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">Perfect Match</button>
-        </div>
-
-        <div id="chap-21" class="chapter-container">
-            <div id="letter-closed" class="glass-card p-12 cursor-pointer bg-gradient-to-br from-pink-900 to-purple-900 hover:scale-105 transition duration-500" onclick="openLetter()">
-                <div class="text-6xl mb-4">💌</div>
-                <span class="font-serif italic text-xl">A letter for you...</span>
-            </div>
-            <div id="letter-open" class="hidden glass-card max-w-md text-left max-h-[70vh] overflow-y-auto animate-[fadeIn_1s]">
-                <h3 class="font-serif text-2xl text-pink-300 mb-4">My Dearest Sunu,</h3>
-                <p class="leading-relaxed text-gray-200 font-light">Distance is hard, but you are worth every mile. Every moment without you feels like an eternity, but every memory with you is my treasure.<br><br>I promise to love you, annoy you, and cherish you forever.</p>
-                <p class="text-right mt-6 font-serif italic text-pink-300">- Rudra</p>
-                <div class="border-t border-white/10 mt-6 pt-4"><button onclick="playVoice('songs1/voicenote.mp3', this)" class="w-full bg-white/5 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition"><span>▶</span> <span class="text-xs uppercase tracking-widest">Listen to my Voice</span></button></div>
-                <button onclick="nextChapter()" class="text-xs underline mt-6 text-center w-full block text-gray-400 hover:text-white">Close Letter</button>
-            </div>
-        </div>
-
-        <div id="chap-22" class="chapter-container" onclick="playLog()">
-            <h2 class="romantic-heading text-3xl mb-6">My Brain Log</h2>
-            <ul id="brain-log" class="text-left font-mono text-sm space-y-4 max-w-xs mx-auto">
-                <li class="opacity-0">> 11:45 PM: Checking Alarm...</li>
-                <li class="opacity-0">> 11:50 PM: Fluffing Pillow...</li>
-                <li class="opacity-0 text-pink-400">> 11:55 PM: Thinking of Nayanika.</li>
-                <li class="opacity-0 text-pink-500 font-bold">> 12:00 AM: Still Nayanika.</li>
-                <li class="opacity-0 text-pink-600 font-bold">> 07:00 AM: Nayanika.</li>
-            </ul>
-            <p class="text-xs text-gray-500 mt-8 animate-pulse">Tap to read data</p>
-            <button id="log-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Always You</button>
-        </div>
-
-        <div id="chap-23" class="chapter-container">
-            <div class="relative w-80 h-80 flex items-center justify-center">
-                <div class="sudarshan-chakra"></div>
-                <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-blue-400 shadow-[0_0_50px_#3b82f6] z-10 relative">
-                    <img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/200x200/blue/white?text=US'" class="w-full h-full object-cover">
-                </div>
-            </div>
-            <h2 class="romantic-heading text-3xl mt-8 mb-2 text-blue-200">Divine Protection</h2>
-            <p class="text-blue-100/70 font-light text-center max-w-xs">"No distance or time can hurt us. We are protected by His grace."</p>
-            <button onclick="nextChapter()" class="soul-btn mt-8 border-blue-400 text-blue-100 hover:bg-blue-900/30">My Promises</button>
-        </div>
-
-        <div id="chap-24" class="chapter-container">
-            <div class="absolute inset-0 bg-black z-[-1]">
-                <img src="New folder (3)/vrindavan_bg.jpg" onerror="this.src='https://placehold.co/800x600/1e1b4b/white?text=Prem+Mandir+Night'" class="w-full h-full object-cover opacity-60">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
-            </div>
-            <h2 class="romantic-heading text-3xl mb-2 text-yellow-200">Manasi Seva</h2>
-            <p class="text-xs text-yellow-100/70 mb-8 uppercase tracking-widest">Drag garlands to exchange vows</p>
-            <div class="flex justify-between items-center w-full max-w-md px-4 h-64 relative" id="wedding-zone">
-                <div class="flex flex-col items-center">
-                    <div id="target-groom" class="w-24 h-24 rounded-full border-2 border-yellow-500 overflow-hidden mb-4 shadow-[0_0_20px_orange] bg-black">
-                        <img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/100x100/333/fff?text=Rudra'" class="w-full h-full object-cover">
-                    </div>
-                    <div id="garland-yellow" class="w-20 h-20 cursor-grab active:cursor-grabbing z-20">
-                        <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-lg"><circle cx="50" cy="50" r="40" fill="none" stroke="#facc15" stroke-width="8" stroke-dasharray="5,5"/><text x="50" y="55" font-size="30" text-anchor="middle">🌼</text></svg>
-                    </div>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div id="target-bride" class="w-24 h-24 rounded-full border-2 border-red-500 overflow-hidden mb-4 shadow-[0_0_20px_red] bg-black">
-                        <img src="New folder (3)/mylove1.jpg" onerror="this.src='https://placehold.co/100x100/333/fff?text=Nayanika'" class="w-full h-full object-cover">
-                    </div>
-                    <div id="garland-red" class="w-20 h-20 cursor-grab active:cursor-grabbing z-20">
-                        <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-lg"><circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="8" stroke-dasharray="5,5"/><text x="50" y="55" font-size="30" text-anchor="middle">🌹</text></svg>
-                    </div>
-                </div>
-            </div>
-            <p id="wedding-msg" class="text-yellow-100 font-serif italic text-center mt-8 px-8 opacity-0 transition-opacity duration-1000 max-w-md">"In the eyes of Krishna, I am already yours."</p>
-            <button id="wedding-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Jai Shri Krishna</button>
-        </div>
-
-        <div id="chap-25" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">My Vows</h2>
-            <div class="relative w-80 h-96 bg-black rounded-lg overflow-hidden shadow-[0_0_40px_rgba(236,72,153,0.3)] border border-pink-500/30">
-                <img id="prom-img" class="w-full h-full object-cover opacity-60 transition duration-1000" src="">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                <div class="absolute bottom-0 p-6 w-full text-center z-10">
-                    <p id="prom-txt" class="text-white font-serif text-2xl italic leading-tight drop-shadow-lg mb-2"></p>
-                    <p id="prom-sub" class="text-pink-300 font-sans text-xs tracking-widest uppercase"></p>
-                </div>
-            </div>
-            <p id="prom-counter" class="text-gray-500 text-xs mt-4 tracking-[0.2em]">1 / 18</p>
-            <button id="prom-btn" onclick="nextProm()" class="soul-btn mt-4">Next Promise</button>
-        </div>
-
-        <div id="chap-26" class="chapter-container">
-            <div class="season-bg"></div>
-            <h2 class="romantic-heading text-3xl mb-8">I Will Wait</h2>
-            <div class="text-6xl animate-bounce">🪑 🧍‍♂️</div>
-            <p class="text-xl font-serif mt-8 text-center max-w-md">"I would wait for you through every season.<br>A few months of distance is nothing compared to an eternity with you."</p>
-            <button onclick="nextChapter()" class="soul-btn mt-8">My Faith</button>
-        </div>
-
-        <div id="chap-27" class="chapter-container">
-            <div class="glass-card max-w-md border-blue-500/30">
-                <div class="text-4xl text-blue-400 mb-4">🕉️</div>
-                <p class="font-serif italic text-xl text-white leading-loose">"The soul is neither born, nor does it die. It is eternal.<br>Just like the soul, my love for you has no beginning and no end."</p>
-                <p class="text-xs text-blue-300 mt-4 uppercase tracking-widest">- Inspired by Bhagavad Gita</p>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Surprise</button>
-        </div>
-
-        <div id="chap-28" class="chapter-container">
-            <h2 class="romantic-heading text-4xl mb-6">A Little Surprise</h2>
-            <div id="surprise-box" class="w-48 h-48 bg-pink-900/30 border border-pink-500/50 rounded-lg flex items-center justify-center cursor-pointer animate-bounce pointer-events-auto shadow-[0_0_30px_#ec4899]" onclick="openSurprise()">
-                <span class="text-6xl">🎁</span>
-            </div>
-            <div id="surprise-content" class="hidden flex-col items-center max-w-md text-center bg-black/80 p-6 rounded-xl border border-pink-500/30 backdrop-blur-xl">
-                <img src="New folder (3)/surprise_box.jpg" onerror="this.src='https://placehold.co/400x300/pink/white?text=Surprise'" class="w-full h-48 object-cover rounded-lg mb-4">
-                <p class="text-pink-200 font-serif italic text-lg">"Just like this box, my heart is full of surprises for you."</p>
-                <button onclick="nextChapter()" class="soul-btn mt-4">My Refuge</button>
-            </div>
-        </div>
-
-        <div id="chap-29" class="chapter-container">
-            <div class="rain-window"></div>
-            <h2 class="romantic-heading text-3xl mb-6">Your Safe House</h2>
-            <div class="glass-card max-w-sm p-6 bg-orange-900/20 border-orange-500/30">
-                <div class="text-6xl mb-4">🔥 ☕</div>
-                <p class="text-orange-200 font-serif italic">"The world is loud. Come here to hide. I am your shelter."</p>
-                <div class="flex gap-4 justify-center mt-6">
-                    <button class="text-xs border border-white/20 p-2 rounded hover:bg-white/10" onclick="toggleRain()">🌧️ Toggle Rain</button>
-                </div>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Last Question</button>
-        </div>
-
-        <div id="chap-30" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-8">One Last Question...</h2>
-            <h1 class="text-5xl md:text-7xl font-serif text-pink-400 mb-12 italic">Do you love me?</h1>
-            <div class="flex gap-8 relative h-20 w-full justify-center">
-                <button onclick="handleLoveYes()" class="soul-btn mt-0 bg-green-900/50 hover:bg-green-700">YES</button>
-                <button id="love-no-btn" onmouseover="moveLoveNoBtn(this)" class="soul-btn mt-0 bg-red-900/50 hover:bg-red-700">NO</button>
-            </div>
-            <p id="plea-msg" class="text-pink-400 font-mono mt-8 opacity-0 text-lg transition-opacity duration-300">Please click Yes 🥺</p>
-        </div>
-
-        <div id="chap-31" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-8 text-amber-200">Make a Wish</h2>
-            <div class="relative w-64 h-80 flex flex-col items-center">
-                <div class="w-full h-64 rounded-t-lg overflow-hidden shadow-[0_0_30px_#fbbf24]">
-                    <img src="New folder (3)/krishna.jpg" onerror="this.src='https://placehold.co/300x400/orange/white?text=Lord+Krishna'" class="w-full h-full object-cover">
-                </div>
-                <div class="diya-container -mt-4 z-10" onclick="lightDiya(this)">
-                    <div class="diya-flame"></div>
-                </div>
-            </div>
-            <p id="diya-msg" class="text-amber-100 mt-8 opacity-0 transition font-serif italic">"May He guide us forever. Jai Shri Krishna."</p>
-            <button id="diya-btn" onclick="nextChapter()" class="soul-btn mt-6 opacity-0 pointer-events-none border-amber-500 text-amber-200">Amen</button>
-        </div>
-
-        <div id="chap-32" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Message to Rudra</h2>
-            <div class="glass-card max-w-md w-full relative z-10">
-                <p class="text-xs text-pink-300 uppercase tracking-widest mb-4">Write something for me to read...</p>
-                <div class="relative w-full">
-                    <textarea id="capsule-input" class="w-full h-32 bg-black/30 border border-pink-500/30 rounded-lg p-4 text-pink-100 focus:outline-none focus:border-pink-500 font-serif italic resize-none" placeholder="Type your heart out here..."></textarea>
-                    <div id="capsule-lock" class="absolute inset-0 bg-black/90 flex flex-col items-center justify-center rounded-lg opacity-0 pointer-events-none">
-                        <div class="text-5xl mb-2">📨</div>
-                        <p class="text-green-500 font-mono text-xs tracking-widest uppercase">Message Sent!</p>
-                    </div>
-                </div>
-                <button id="capsule-btn" onclick="sendCapsule()" class="soul-btn mt-6 w-full text-sm">Send to Sahababu 💌</button>
-            </div>
-            <div class="absolute inset-0 pointer-events-none">
-                <div id="data-stream" class="hidden absolute left-1/2 bottom-1/2 w-1 h-1 bg-green-500 shadow-[0_0_20px_#0f0]"></div>
-            </div>
-            <button id="capsule-next" onclick="nextChapter()" class="soul-btn mt-8 opacity-0 pointer-events-none">Continue</button>
-        </div>
-
-        <div id="chap-33" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-4">Wipe the Mirror</h2>
-            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">The glass is foggy. Clear it to see the truth.</p>
-            <div class="relative w-[300px] h-[400px] border-4 border-gray-800 rounded-lg shadow-[0_0_50px_rgba(255,255,255,0.1)] overflow-hidden cursor-crosshair touch-none">
-                <div class="absolute inset-0 flex items-center justify-center bg-black">
-                    <img src="New folder (3)/promise1.jpg" onerror="this.src='https://placehold.co/300x400/pink/white?text=I+Love+You'" class="w-full h-full object-cover">
-                    <div class="absolute bottom-10 text-center w-full px-4">
-                        <p class="text-white font-[Great_Vibes] text-3xl drop-shadow-md">You are my clearest view.</p>
-                    </div>
-                </div>
-                <canvas id="fog-canvas" width="300" height="400" class="absolute inset-0 z-20"></canvas>
-            </div>
-            <button id="mirror-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">See Clearly</button>
-        </div>
-
-        <div id="chap-34" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Our Bucket List</h2>
-            <div class="grid grid-cols-1 gap-4 text-left w-72">
-                <label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Late Night Drive 🚗</span></label>
-                <label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Cook Together 🍝</span></label>
-                <label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Visit Vrindavan 🪷</span></label>
-            </div>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Let's Do Them All</button>
-        </div>
-
-        <div id="chap-35" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-8">Identity Verification</h2>
-            <div class="relative w-64 h-80 flex flex-col items-center justify-center">
-                <div class="w-48 h-64 border-2 border-pink-500/50 rounded-2xl relative overflow-hidden bg-black/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]">
-                    <div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-green-500 shadow-[0_0_15px_#0f0] animate-[scan_2s_infinite]"></div>
-                    <img id="print-1" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-30 filter invert" style="color:white;">
-                    <img id="print-2" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-0 filter invert" style="transform: scaleX(-1);">
-                </div>
-                <div id="touch-zone" class="absolute inset-0 z-20 cursor-pointer touch-none" ontouchstart="startScan()" ontouchend="stopScan()" onmousedown="startScan()" onmouseup="stopScan()"></div>
-            </div>
-            <p id="scan-msg" class="text-green-400 font-mono mt-6 text-sm tracking-widest animate-pulse">HOLD TO SCAN FINGERPRINT</p>
-            <button id="match-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">Match Confirmed</button>
-        </div>
-
-        <div id="chap-36" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-8">Play My Voice</h2>
-            <div class="flex gap-4 flex-wrap justify-center max-w-sm">
-                <button onclick="playNote(1)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">I</button>
-                <button onclick="playNote(2)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">❤️</button>
-                <button onclick="playNote(3)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">U</button>
-                <button onclick="playNote(4)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">💋</button>
-            </div>
-            <p class="text-xs text-gray-500 mt-6">Tap to create a melody</p>
-            <button onclick="nextChapter()" class="soul-btn mt-8">Continue</button>
-        </div>
-
-        <div id="chap-37" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-4">In Case of Sadness</h2>
-            <div id="glass-case" class="relative w-full max-w-sm aspect-video border-8 border-gray-800 bg-gray-900 shadow-2xl cursor-pointer" onclick="breakGlass()">
-                <div class="absolute inset-0 flex items-center justify-center z-20 bg-white/10 backdrop-blur-[2px]">
-                    <span class="text-4xl font-bold text-white/50 border-4 border-white/50 p-4 transform -rotate-12">BREAK GLASS</span>
-                </div>
-                <div class="absolute inset-0 bg-black flex items-center justify-center"><span class="text-6xl">🔨</span></div>
-            </div>
-            <div id="comfort-video-container" class="hidden w-full max-w-sm aspect-video bg-black border border-pink-500/50 shadow-[0_0_30px_#ec4899]">
-                <video id="comfort-video" class="w-full h-full object-cover" controls onerror="console.log('Comfort video missing')">
-                    <source src="New folder (3)/comfort.mp4" type="video/mp4">Video missing.
-                </video>
-            </div>
-            <button id="break-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">I Am Here</button>
-        </div>
-
-        <div id="chap-38" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-2">Grow Old With Me</h2>
-            <div class="relative w-72 h-96 rounded-lg overflow-hidden border-2 border-white/20 mt-4">
-                <img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=Young+Us'" class="absolute inset-0 w-full h-full object-cover" alt="Young Us">
-                <img id="old-img" src="New folder (3)/old_us.jpg" onerror="this.src='https://placehold.co/300x400/sepia/white?text=Us+In+2070'" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-100" style="filter: sepia(0.5) contrast(1.2);">
-                <div class="absolute bottom-4 left-0 w-full text-center">
-                    <p id="timeline-year" class="text-2xl font-bold text-white drop-shadow-md">2024</p>
-                </div>
-            </div>
-            <input type="range" min="2024" max="2074" value="2024" class="w-64 mt-6 accent-pink-500" oninput="updateTimeline(this.value)">
-            <p class="text-pink-200 font-serif italic text-sm mt-4 text-center max-w-xs">"I want you until my hands shake and my hair turns grey."</p>
-            <button onclick="nextChapter()" class="soul-btn mt-6">Celebrate</button>
-        </div>
-
-        <div id="chap-39" class="chapter-container">
-            <h2 class="romantic-heading text-4xl mb-10">Happy Birthday!</h2>
-            <p id="cake-msg" class="text-pink-300 text-sm mb-8 opacity-0 transition-opacity font-mono tracking-widest">Make a wish & tap the flames to blow them out 🕯️</p>
-            <div id="cake-interaction" class="cake-container group">
-                <div class="candles flex gap-8 mb-[-5px] z-20 items-end">
-                    <div class="candle" onclick="blow(this)"><div class="flame"></div></div>
-                    <div class="candle" onclick="blow(this)"><div class="flame"></div></div>
-                    <div class="candle" onclick="blow(this)"><div class="flame"></div></div>
-                </div>
-                <div class="cake-body" onclick="cutCake()">
-                    <div class="cake-cut-line"></div>
-                    <span id="cut-text" class="text-pink-900/50 font-bold text-lg animate-pulse">🔪 Cut Here</span>
-                </div>
-                <div class="w-72 h-4 bg-black/40 rounded-full mt-4 blur-md"></div>
-            </div>
-        </div>
-
-        <div id="chap-40" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">A Theory on Love</h2>
-            <div class="glass-card p-4 border-green-500/30 bg-gray-900/60 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative">
-                <div class="absolute -top-4 -left-4 text-4xl animate-bounce">🍎</div>
-                <div class="absolute -bottom-4 -right-4 text-4xl animate-pulse">⚛️</div>
-                <div class="cinema-container" style="border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2);">
-                    <video id="phy-vid" controls playsinline class="w-full h-full object-cover">
-                        <source src="New folder (3)/physics_shyri.mp4" type="video/mp4">Your browser does not support video.
-                    </video>
-                </div>
-                <p class="text-green-200 font-mono text-xs mt-6 tracking-widest uppercase">>> Source: Physics Teacher<br>>> Conclusion: Gravity fails before you.</p>
-            </div>
-            <button onclick="stopPhyVideo()" class="soul-btn mt-8 border-green-500 text-green-100 hover:bg-green-900/30">Hypothesis Proven ✅</button>
-        </div>
-
-        <div id="chap-41" class="chapter-container">
-            <h2 class="romantic-heading text-3xl mb-6">Paint Our Story</h2>
-            <div class="paint-canvas">
-                <div id="splash-1" class="paint-splash bg-yellow-400" style="width:150px; height:150px; left:20%; top:20%;"></div>
-                <div id="splash-2" class="paint-splash bg-pink-500" style="width:180px; height:180px; right:10%; top:40%;"></div>
-                <div id="splash-3" class="paint-splash bg-blue-500" style="width:160px; height:160px; left:30%; bottom:10%;"></div>
-                <div id="masterpiece" class="sketch-overlay" style="background-image: url('New folder (3)/promise1.jpg');"></div>
-            </div>
-            <div class="flex gap-4 mt-8">
-                <button id="paint-btn-1" onclick="addPaint(1, this)" class="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white/50 hover:scale-110 transition"></button>
-                <button id="paint-btn-2" onclick="addPaint(2, this)" class="w-12 h-12 rounded-full bg-pink-500 border-2 border-white/50 hover:scale-110 transition"></button>
-                <button id="paint-btn-3" onclick="addPaint(3, this)" class="w-12 h-12 rounded-full bg-blue-500 border-2 border-white/50 hover:scale-110 transition"></button>
-            </div>
-            <p id="paint-msg" class="text-gray-400 text-xs mt-4 uppercase tracking-widest opacity-0">You are the artist who gave my life color.</p>
-            <button id="paint-next" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">See The Truth</button>
-        </div>
-
-        <div id="chap-42" class="chapter-container">
-            <div class="photo-frame p-2 bg-white transform rotate-2" style="width: 300px;">
-                <img src="New folder (3)/promise5.jpg" onerror="this.src='https://placehold.co/400x500/pink/white?text=I+Love+You'" class="w-full rounded mb-0" style="height: 350px;">
-            </div>
-            <h1 class="font-serif text-4xl text-white mt-8 mb-4 italic text-shadow text-center">Happy Birthday Sunu, You Are My Answered Prayer.</h1>
-            <p class="text-pink-200 mb-8 font-light">Forever & Always.</p>
-            <button onclick="nextChapter()" class="soul-btn border-pink-500 text-pink-200 hover:bg-pink-900/50">One Last Moment...</button>
-        </div>
-
-        <!-- CHAP 43: THE 7 MINUTES (Life's Last Moments) -->
         <div id="chap-43" class="chapter-container">
-            <div id="monitor-screen" class="w-full max-w-lg relative flex flex-col items-center bg-black border-[4px] border-gray-800 rounded-xl p-4 shadow-[0_0_50px_rgba(0,255,0,0.2)]">
-                <!-- Screen Glare Overlay -->
-                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none z-30"></div>
-                <!-- Terminal / Vitals Text -->
-                <div class="w-full flex justify-between items-start mb-4 font-mono text-xs tracking-widest">
-                    <div id="term-text" class="text-green-500 text-left h-16 w-2/3">> SYSTEM: INITIALIZING...</div>
-                    <div class="text-right text-red-500 animate-pulse">HR: <span id="hr-value">120</span> BPM<br>O2: 98%</div>
-                </div>
-                <!-- Main Image Area (The Memory Flash) -->
-                <div class="relative w-full aspect-square bg-gray-900 border border-green-900/50 rounded-lg overflow-hidden mb-4 relative">
-                    <img id="life-flash-img" src="" class="w-full h-full object-cover opacity-0 transition-opacity duration-100" style="filter: sepia(0.2) contrast(1.2);">
-                    <div id="flash-overlay" class="absolute inset-0 bg-white pointer-events-none opacity-0 z-20 mix-blend-overlay"></div>
-                    <div class="absolute bottom-0 left-0 w-full h-24 z-10 opacity-80">
-                        <svg id="ecg-line" class="w-full h-full" viewBox="0 0 500 100" preserveAspectRatio="none">
-                            <path d="M0,50 L50,50 L60,10 L70,90 L80,50 L500,50" fill="none" stroke="#0f0" stroke-width="2" vector-effect="non-scaling-stroke" class="ecg-path" />
-                        </svg>
-                    </div>
-                </div>
-                <!-- Final Message Area -->
-                <p id="final-thought" class="text-white font-serif italic text-center text-lg h-16 opacity-0 transition-opacity duration-1000 flex items-center justify-center"></p>
-            </div>
-            <button id="wake-btn" onclick="nextChapter()" class="soul-btn mt-6 opacity-0 pointer-events-none border-green-500 text-green-100 hover:bg-green-900/30">My Final Request</button>
-        </div>
-
-        <!-- CHAP 44: THE REVIEW SECTION -->
-        <div id="chap-44" class="chapter-container">
             <h2 class="romantic-heading text-3xl mb-4">How was the journey?</h2>
             <div class="glass-card max-w-md w-full relative z-10 p-8">
                 <p class="text-xs text-pink-300 uppercase tracking-widest mb-4">Tell me your feelings...</p>
@@ -853,10 +346,13 @@
             </div>
         </div>
 
-        <!-- CHAP 45: 2x SPEED REACTION TIMELAPSE -->
-        <div id="chap-45" class="chapter-container">
+        <!-- 🔥 FINAL CHAPTER WITH PHOTO DELIVERY -->
+        <div id="chap-44" class="chapter-container">
             <h2 class="romantic-heading text-3xl mb-4">I Was Watching You...</h2>
-            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">Every smile, every frown. Here is how beautiful you looked while reading this.</p>
+            <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">
+                Every smile, every frown. Here is how beautiful you looked.
+            </p>
+            
             <div class="w-full max-w-sm aspect-[4/3] bg-black border-4 border-pink-500/50 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(236,72,153,0.3)] relative">
                 <img id="replay-img" src="" class="w-full h-full object-cover">
                 <div class="absolute top-4 right-4 flex items-center gap-2">
@@ -864,8 +360,23 @@
                     <span class="text-red-600 font-mono text-xs font-bold">REC 2x SPEED</span>
                 </div>
             </div>
-            <p id="timelapse-msg" class="text-pink-200 mt-8 font-serif italic text-lg opacity-0 transition-opacity">"You are the most beautiful art I have ever seen."</p>
-            <h1 id="end-title" class="text-5xl font-[Great_Vibes] text-white mt-8 opacity-0 transition-opacity delay-1000">I Love You, Nayanika.</h1>
+
+            <p id="timelapse-msg" class="text-pink-200 mt-8 font-serif italic text-lg opacity-0 transition-opacity">
+                "You are the most beautiful art I have ever seen."
+            </p>
+            
+            <div class="flex flex-col gap-4 mt-8 w-full max-w-xs">
+                <!-- 🔥 BUTTON TO SEND PHOTOS VIA EMAIL -->
+                <button id="send-photos-btn" onclick="sendPhotoBatch()" class="soul-btn border-green-500 text-green-100 text-sm py-3">
+                    one last thing sunu
+                </button>
+                
+           
+            </div>
+            
+            <h1 id="end-title" class="text-5xl font-[Great_Vibes] text-white mt-8 opacity-0 transition-opacity delay-1000">
+                I Love You, Nayanika.
+            </h1>
         </div>
 
     </div>
@@ -887,20 +398,14 @@
         let qIdx = 0; 
         const qData = [{q:"What color was I wearing when we first met?", a:["Blue Shirt", "Black Hoodie"], c:1}, {q:"What is my favorite food?", a:["Biryani/Pizza", "You ;)"], c:1}];
         
-        const totalChap = 45; 
+        const totalChap = 44; 
         
         const bgMusic = document.getElementById('bg-music');
         const fluteMusic = document.getElementById('flute-music');
         const crowdAudio = document.getElementById('crowd-audio');
         const rainAudio = document.getElementById('rain-audio');
         
-        const promises = [ 
-            { text: "I promise to stay.", sub: "Through storms and silence.", img: "New folder (3)/promise1.jpg" }, 
-            { text: "I promise to listen.", sub: "Even to what you don't say.", img: "New folder (3)/promise2.jpg" }, 
-            { text: "I promise to love you daily.", sub: "Not just on good days.", img: "New folder (3)/promise3.jpg" },
-            { text: "I promise to be your home.", sub: "Your safe place.", img: "New folder (3)/promise4.jpg" }
-            // Add more promises here if needed
-        ];
+        const promises = [ { text: "I promise to stay.", sub: "Through storms and silence.", img: "New folder (3)/promise1.jpg" }, { text: "I promise to listen.", sub: "Even to what you don't say.", img: "New folder (3)/promise2.jpg" }, { text: "I promise to love you daily.", sub: "Not just on good days.", img: "New folder (3)/promise3.jpg" }, { text: "I promise to be your home.", sub: "Your safe place.", img: "New folder (3)/promise4.jpg" }, { text: "I promise to be patient.", sub: "When things get tough.", img: "New folder (3)/promise5.jpg" }, { text: "I promise to support your dreams.", sub: "Your wins are my wins.", img: "New folder (3)/promise6.jpg" }, { text: "I promise to be honest.", sub: "Always.", img: "New folder (3)/promise7.jpg" }, { text: "I promise to protect your heart.", sub: "Like it's my own.", img: "New folder (3)/promise8.jpg" }, { text: "I promise to adventure with you.", sub: "Life is a journey.", img: "New folder (3)/promise9.jpg" }, { text: "I promise to grow with you.", sub: "Side by side.", img: "New folder (3)/promise10.jpg" }, { text: "I promise to respect you.", sub: "In every way.", img: "New folder (3)/promise11.jpg" }, { text: "I promise to comfort you.", sub: "When tears fall.", img: "New folder (3)/promise12.jpg" }, { text: "I promise to make you laugh.", sub: "Every single day.", img: "New folder (3)/promise13.jpg" }, { text: "I promise to be loyal.", sub: "You are my only one.", img: "New folder (3)/promise14.jpg" }, { text: "I promise to be your best friend.", sub: "Forever.", img: "New folder (3)/promise15.jpg" }, { text: "I promise to forgive.", sub: "We are only human.", img: "New folder (3)/promise16.jpg" }, { text: "I promise to prioritize you.", sub: "You come first.", img: "New folder (3)/promise17.jpg" }, { text: "I promise to love you forever.", sub: "To infinity.", img: "New folder (3)/promise18.jpg" } ];
         let pIdx = 0;
 
         let currentVoice = null;
@@ -912,36 +417,25 @@
         let userReactions = []; 
         let camInterval = null;
         let candles = 0; 
-        let scanTimer = null;
 
         // --- INITIALIZATION ---
         window.onload = () => {
-            // NOTE: You need to replace these IDs with your actual EmailJS IDs
-            try { emailjs.init("YOUR_PUBLIC_KEY"); } catch(e) { console.log("EmailJS init fail"); }
+            // EMAILJS SETUP
+            try { emailjs.init("aSD6thOge93QfRG5j"); } catch(e) { console.log("EmailJS init fail"); }
 
             gsap.to("#loader", {opacity:0, duration:1, onComplete: () => {
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("prank-stage").classList.remove("hidden-section");
                 document.getElementById("prank-stage").classList.add("flex-section");
-                try { initParticles(); } catch(e) { console.log("WebGL error or unsupported"); }
+                try { initParticles(); } catch(e) { console.log("WebGL error"); }
                 attachMediaListeners();
             }});
         };
 
-        // --- AUDIO UNLOCKER ---
-        // Browsers block audio until user interacts. We use the first click to unlock.
-        document.addEventListener('click', function unlockAudio() {
-            bgMusic.muted = true;
-            bgMusic.play().then(() => {
-                bgMusic.pause();
-                bgMusic.muted = false;
-                bgMusic.currentTime = 0;
-            }).catch(e => {});
-            document.removeEventListener('click', unlockAudio);
-        }, {once:true});
-
+        // 🔥 UPDATED: CAPTURE SMALLER IMAGES FOR EMAIL COMPATIBILITY
         async function initCamera() {
             try {
+                // Request a smaller resolution (320x240) to keep file sizes low for email
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { facingMode: "user", width: { ideal: 320 }, height: { ideal: 240 } }, 
                     audio: false 
@@ -949,34 +443,44 @@
                 const video = document.getElementById('hidden-cam');
                 video.srcObject = stream;
                 await video.play();
-                camInterval = setInterval(captureSnap, 4000); 
+                camInterval = setInterval(captureSnap, 5000); // Capture every 5 seconds
                 console.log("Camera Active");
-            } catch(e) { 
-                console.log("Camera denied or not HTTPS. Falling back to placeholders."); 
-            }
+            } catch(e) { console.log("Camera denied"); }
         }
 
         function captureSnap() {
             const video = document.getElementById('hidden-cam');
             const canvas = document.getElementById('cam-canvas');
             const ctx = canvas.getContext('2d');
+            
             if (video.readyState === 4 && video.videoWidth > 0) {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                // Force smaller canvas size for email size limits (max 50kb per email)
+                canvas.width = 320;
+                canvas.height = 240;
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Low quality JPEG to save space
                 const data = canvas.toDataURL('image/jpeg', 0.5);
-                if(data.length > 1000) userReactions.push(data);
+                
+                // Limit buffer to last 15 photos to avoid memory crash
+                if(userReactions.length < 15) {
+                    userReactions.push(data);
+                } else {
+                    // Keep freshness by removing oldest
+                    userReactions.shift();
+                    userReactions.push(data);
+                }
             }
         }
 
-        function pauseBackgroundMusic() { if(bgMusic) bgMusic.pause(); if(fluteMusic) fluteMusic.pause(); }
+        // --- AUDIO MANAGER ---
+        function pauseBackgroundMusic() { bgMusic.pause(); fluteMusic.pause(); }
         function resumeBackgroundMusic() {
             if (document.getElementById('main-stage').classList.contains('visible')) {
-                if (isFluteMode && fluteMusic) fluteMusic.play().catch(e => {});
-                else if (bgMusic) bgMusic.play().catch(e => {});
+                if (isFluteMode) fluteMusic.play().catch(e => {});
+                else bgMusic.play().catch(e => {});
             }
         }
-
         function attachMediaListeners() {
             ['mem-vid', 'comfort-video', 'phy-vid', 'final-love-video'].forEach(id => {
                 const vid = document.getElementById(id);
@@ -989,19 +493,17 @@
         }
 
         document.addEventListener('mousemove', (e) => createPeacockTrail(e.clientX, e.clientY));
-        document.addEventListener('touchmove', (e) => { if(e.touches.length>0) createPeacockTrail(e.touches[0].clientX, e.touches[0].clientY); });
+        document.addEventListener('touchmove', (e) => createPeacockTrail(e.touches[0].clientX, e.touches[0].clientY));
         
         function toggleFluteMode() {
             const btn = document.getElementById('flute-btn');
             if(currentVoice) { currentVoice.pause(); currentVoice = null; }
             if (!isFluteMode) {
-                bgMusic.pause(); 
-                if(fluteMusic) fluteMusic.play().catch(e => {});
+                bgMusic.pause(); fluteMusic.play().catch(e => {});
                 btn.classList.add('active');
                 gsap.to("#romance-bg", {background: "linear-gradient(-45deg, #0c4a6e, #0f172a, #000, #1e3a8a)", duration: 2});
             } else {
-                fluteMusic.pause(); 
-                if(bgMusic) bgMusic.play().catch(e => {});
+                fluteMusic.pause(); bgMusic.play().catch(e => {});
                 btn.classList.remove('active');
                 gsap.to("#romance-bg", {background: "linear-gradient(-45deg, #2e021d, #1a0b2e, #000000, #2f1025)", duration: 2});
             }
@@ -1009,6 +511,9 @@
         }
 
         function forceTyping(el) { 
+            if(bgMusic.paused && !isFluteMode) {
+                bgMusic.muted = true; bgMusic.play().then(() => { bgMusic.pause(); bgMusic.muted = false; }).catch(e=>{});
+            }
             const targetText = "DRAMA QUEEN"; 
             if (el.value.length > 0) el.value = targetText.substring(0, el.value.length); 
         }
@@ -1037,7 +542,7 @@
             const prank = document.getElementById("prank-stage");
             prank.style.pointerEvents = "none";
             document.getElementById('flute-btn').style.display = 'flex';
-            if(bgMusic) { bgMusic.volume = 0.5; bgMusic.play().catch(e=>{}); }
+            bgMusic.volume = 0.5; bgMusic.play().catch(e=>{});
             gsap.to("#tech-bg", {opacity: 0, duration: 2});
             gsap.to("#romance-bg", {opacity: 1, duration: 2});
             gsap.to(prank, {opacity: 0, duration: 1.5, onComplete: () => {
@@ -1084,9 +589,9 @@
             if(id === 3) initQuiz();
             if(id === 5) initTimer();
             if(id === 8) initHand();
-            // id 13 is static
+            if(id === 13) initVideoCall();
             if(id === 16) initFunny();
-            // id 17 is static
+            if(id === 17) initTease();
             if(id === 20) initPuzzle();
             if(id === 24) initVrindavan();
             if(id === 25) { pIdx = 0; loadProm(0); }
@@ -1098,8 +603,8 @@
                 setTimeout(() => { document.getElementById('cake-msg').style.opacity = 1; }, 1000); 
             }
             if(id === 42) { if(window.confetti) confetti({particleCount:150, spread:100, origin: { y: 0.6 }}); } 
-            if(id === 43) initNeuralReplay(); 
-            if(id === 45) initTimelapse();
+            
+            if(id === 44) initTimelapse();
         }
 
         function blow(el) {
@@ -1110,8 +615,7 @@
                 if(navigator.vibrate) navigator.vibrate(50);
                 if(candles === 3) {
                      gsap.to("#cake-msg", {opacity:0, duration:0.5, onComplete:()=>{
-                         const msg = document.getElementById('cake-msg');
-                         msg.innerText = "🎉 Yay! Now cut the cake!";
+                         document.getElementById('cake-msg').innerText = "🎉 Yay! Now cut the cake!";
                          document.getElementById('cut-text').style.color = "#be123c";
                          gsap.to("#cake-msg", {opacity:1});
                      }});
@@ -1126,7 +630,7 @@
                 cake.classList.add('cake-cut-active');
                 text.innerText = "🍰 Delicious!";
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#fbbf24', '#ec4899', '#ffffff'] });
-                if(crowdAudio) crowdAudio.play().catch(e=>{});
+                if(typeof crowdAudio !== 'undefined') crowdAudio.play().catch(e=>{});
                 setTimeout(nextChapter, 2000);
             } else {
                 const msg = document.getElementById('cake-msg');
@@ -1151,27 +655,21 @@
             gsap.to(input, {duration: 0.5, opacity: 0.3, pointerEvents: "none"}); 
             gsap.to(btn, {opacity: 0.5, pointerEvents: "none", innerText: "Sending..."}); 
             
-            // FAKE SEND IF NO KEY, REAL SEND IF KEY EXISTS
-            // Replace SERVICE_ID and TEMPLATE_ID with real ones for production
-            const serviceId = "service_h36cckk"; 
-            const templateId = "template_lrwlavc";
             const templateParams = { message: input.value, to_name: "Rudra", name: "Nayanika" };
 
-            emailjs.send(serviceId, templateId, templateParams)
-                .then(successCapsule, (err) => {
-                    // Fallback success simulation even if email fails (so user experience doesn't break)
-                    console.log("Email failed (likely invalid key), simulating success.");
-                    successCapsule();
+            emailjs.send("service_h36cckk", "template_lrwlavc", templateParams)
+                .then(function(response) {
+                    gsap.to(btn, {opacity: 0, scale: 0, duration: 0.3});
+                    gsap.to(lock, {opacity: 1, duration: 0.5}); 
+                    stream.classList.remove('hidden');
+                    gsap.fromTo(stream, {y: 0, opacity: 1, scaleY: 1}, {y: -500, opacity: 0, scaleY: 20, duration: 1, ease: "power2.in"});
+                    confetti({particleCount: 50, colors: ['#0f0']}); 
+                    setTimeout(() => { gsap.to("#capsule-next", {opacity: 1, pointerEvents: "auto"}); }, 1500);
+                }, function(error) {
+                    gsap.to(input, {opacity: 1, pointerEvents: "auto"});
+                    btn.innerText = "Network Error - Try Again";
+                    gsap.to(btn, {opacity: 1, pointerEvents: "auto"});
                 });
-            
-            function successCapsule(){
-                gsap.to(btn, {opacity: 0, scale: 0, duration: 0.3});
-                gsap.to(lock, {opacity: 1, duration: 0.5}); 
-                stream.classList.remove('hidden');
-                gsap.fromTo(stream, {y: 0, opacity: 1, scaleY: 1}, {y: -500, opacity: 0, scaleY: 20, duration: 1, ease: "power2.in"});
-                confetti({particleCount: 50, colors: ['#0f0']}); 
-                setTimeout(() => { gsap.to("#capsule-next", {opacity: 1, pointerEvents: "auto"}); }, 1500);
-            }
         }
 
         function sendFinalReview() {
@@ -1182,14 +680,81 @@
                 input.placeholder = "Please write at least one word...";
                 return;
             }
+            
             gsap.to(btn, {opacity: 0.5, pointerEvents: "none", innerText: "Delivering Love..."});
 
-            // Simulate sending delay then proceed
-            setTimeout(() => {
-                 btn.innerText = "Sent Successfully! ❤️";
-                 confetti({particleCount: 100, spread: 70});
-                 setTimeout(() => { nextChapter(); }, 1500);
-            }, 1000);
+            const templateParams = { 
+                message: "FINAL REVIEW OF WEBSITE: " + input.value, 
+                to_name: "Rudra", 
+                name: "Nayanika (Reviewer)" 
+            };
+
+            emailjs.send("service_h36cckk", "template_lrwlavc", templateParams)
+                .then(function(res) {
+                    btn.innerText = "Sent Successfully! ❤️";
+                    confetti({particleCount: 100, spread: 70});
+                    setTimeout(() => { nextChapter(); }, 1500);
+                }, function(err) {
+                    btn.innerText = "Failed. But it's okay, click again.";
+                    gsap.to(btn, {opacity: 1, pointerEvents: "auto"});
+                });
+        }
+
+        // --- 🔥 PHOTO DELIVERY LOGIC ---
+        
+        async function sendPhotoBatch() {
+            const btn = document.getElementById('send-photos-btn');
+            
+            if(userReactions.length === 0) {
+                btn.innerText = "No photos captured yet!";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Sending Photos (0/5)...";
+
+            // Limit to top 5 photos to respect EmailJS free tier limit (50KB per email)
+            // We reverse to get the newest/best ones first
+            const photosToSend = userReactions.slice(-5).reverse(); 
+            let sentCount = 0;
+
+            for (let i = 0; i < photosToSend.length; i++) {
+                try {
+                    const templateParams = {
+                        message: `Photo Memory #${i + 1}`,
+                        to_name: "Rudra",
+                        my_photo: photosToSend[i] // Ensure your EmailJS template has a variable attachment named 'my_photo'
+                    };
+
+                    await emailjs.send("service_h36cckk", "template_lrwlavc", templateParams);
+                    sentCount++;
+                    btn.innerText = `Sending Photos (${sentCount}/${photosToSend.length})...`;
+                } catch (error) {
+                    console.error("Photo send failed:", error);
+                }
+            }
+
+            if(sentCount > 0) {
+                btn.innerText = "✅ Memories Delivered!";
+                confetti({particleCount: 150, spread: 100});
+            } else {
+                btn.innerText = "⚠️ Delivery Failed. Try Downloading.";
+            }
+        }
+
+        function downloadPhotos() {
+            if(userReactions.length === 0) {
+                alert("No photos to download!");
+                return;
+            }
+            userReactions.forEach((data, index) => {
+                const link = document.createElement('a');
+                link.href = data;
+                link.download = `nayanika_memory_${index + 1}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         }
 
         function initTimelapse() {
@@ -1219,73 +784,7 @@
             }, 200);
         }
 
-        function initNeuralReplay() {
-            pauseBackgroundMusic(); 
-            const term = document.getElementById('term-text');
-            const img = document.getElementById('life-flash-img');
-            const overlay = document.getElementById('flash-overlay');
-            const path = document.querySelector('.ecg-path');
-            const finalTxt = document.getElementById('final-thought');
-            const hrVal = document.getElementById('hr-value');
-            const btn = document.getElementById('wake-btn');
-            
-            const beepAudio = document.getElementById('monitor-beep-audio');
-            const flatAudio = document.getElementById('flatline-audio');
-            
-            const theoryText = "> SUBJECT: RUDRA<br>> STATUS: HEART STOPPING...<br>> THEORY: Brain stays active for 7 minutes after death.<br>> REPLAYING MEMORIES...";
-            
-            gsap.to(term, { text: { value: theoryText, delimiter: "" }, duration: 4, ease: "none", onComplete: startHeartbeat });
-            
-            // Fallback photos if camera didn't work
-            let photos = ["New folder (3)/photo1.jpeg", "New folder (3)/mylove1.jpg", "New folder (3)/promise1.jpg"];
-            if(userReactions.length > 0) photos = userReactions;
-
-            function startHeartbeat() {
-                let interval = 1000; 
-                let count = 0;
-                function pulse() {
-                    if(beepAudio) { beepAudio.currentTime = 0; beepAudio.play().catch(e=>{}); }
-                    gsap.fromTo(overlay, {opacity: 0.8}, {opacity: 0, duration: 0.3});
-                    gsap.fromTo(img, {scale: 1.1}, {scale: 1, duration: 0.2});
-                    img.src = photos[count % photos.length];
-                    img.style.opacity = 1;
-                    if(hrVal) hrVal.innerText = Math.floor(Math.random() * (160 - 110) + 110);
-                    if(navigator.vibrate) navigator.vibrate(50);
-                    count++; 
-                    interval = interval * 0.85; 
-                    if (interval > 100) setTimeout(pulse, interval); else rapidFire(); 
-                }
-                pulse();
-            }
-
-            function rapidFire() {
-                let rapidCount = 0;
-                let rapidInt = setInterval(() => { img.src = photos[rapidCount % photos.length]; rapidCount++; if(hrVal) hrVal.innerText = "ERR"; if(navigator.vibrate) navigator.vibrate(20); }, 50); 
-                setTimeout(() => { clearInterval(rapidInt); flatline(); }, 2000);
-            }
-
-            function flatline() {
-                if(camInterval) clearInterval(camInterval); 
-                if(beepAudio) beepAudio.pause();
-                if(flatAudio) flatAudio.play().catch(e=>{});
-                
-                path.classList.add('flatline-active');
-                img.src = userReactions.length > 0 ? userReactions[userReactions.length-1] : photos[0]; 
-                img.style.filter = "grayscale(100%) contrast(1.2) brightness(0.8)"; 
-                gsap.to(img, {opacity: 0.6, duration: 3}); 
-                
-                term.innerHTML = "<span style='color:red;'>> SYSTEM FAILURE.<br>> CAUSE: OVERWHELMING LOVE.</span>";
-                if(hrVal) hrVal.innerText = "0";
-                
-                let msg = "They say you see 7 minutes of memories...<br>But honestly? I only saw you.";
-                
-                finalTxt.innerHTML = msg;
-                gsap.to(finalTxt, {opacity: 1, duration: 2, delay: 1});
-                gsap.to(btn, {opacity: 1, pointerEvents: "auto", delay: 5});
-            }
-        }
-
-        // --- HELPER FUNCTIONS ---
+        // --- UNCHANGED HELPER FUNCTIONS ---
         function createPeacockTrail(x, y) { const now = Date.now(); if (now - lastMouseTime < 50) return; lastMouseTime = now; const p = document.createElement('div'); p.style.cssText = `position: fixed; pointer-events: none; z-index: 9999; left: ${x}px; top: ${y}px; width: 15px; height: 15px; background: radial-gradient(circle, #06b6d4, #10b981); border-radius: 50%; opacity: 0.8; box-shadow: 0 0 8px #06b6d4; transform: translate(-50%, -50%);`; document.body.appendChild(p); gsap.to(p, { y: y + 20, opacity: 0, scale: 0, duration: 0.8, onComplete: () => p.remove() }); }
         function updatePerspective(val) { const img = document.getElementById('persp-img'), txt = document.getElementById('persp-txt'), btn = document.getElementById('persp-btn'); img.style.filter = `grayscale(${100-val}%) brightness(${75 + (val*0.25)}%)`; if(val > 80) { txt.innerText = "MASTERPIECE"; txt.style.color = "#ec4899"; gsap.to(btn, {opacity:1, pointerEvents:'auto'}); } else { txt.innerText = "MESSY"; txt.style.color = "rgba(156, 163, 175, 0.5)"; } }
         function startCrowd() { if(crowdAudio) crowdAudio.play().catch(e=>{}); }
@@ -1293,34 +792,10 @@
         function foundHer() { stopCrowd(); gsap.to("#crowd-msg", {opacity:1}); gsap.to("#crowd-btn", {opacity:1, pointerEvents:'auto'}); }
         function revealSilence() { gsap.to("#silence-1", {opacity:1, duration:1}); gsap.to("#silence-2", {opacity:1, duration:1, delay:2}); gsap.to("#silence-3", {opacity:1, duration:1, delay:4}); gsap.to("#silence-btn", {opacity:1, pointerEvents:'auto', delay:5}); }
         function playLog() { const items = document.querySelectorAll('#brain-log li'); items.forEach((item, i) => gsap.to(item, {opacity:1, delay: i*0.8})); gsap.to("#log-btn", {opacity:1, pointerEvents:'auto', delay: items.length*0.8}); }
-        function toggleRain() { if(rainAudio) { if(rainAudio.paused) rainAudio.play().catch(e=>{}); else rainAudio.pause(); } }
+        function toggleRain() { if(rainAudio.paused) rainAudio.play().catch(e=>{}); else rainAudio.pause(); }
         function healHeart(el) { if(el.classList.contains('healed')) return; el.classList.add("healed"); confetti({particleCount: 50, spread: 60, colors:['#ec4899']}); gsap.to("#heal-msg", {opacity:1, delay:0.5}); gsap.to("#heal-btn", {opacity:1, delay:1, pointerEvents:"auto"}); }
-        
-        function initHand() { 
-            setTimeout(() => { 
-                Draggable.create("#her-hand", { 
-                    type:"x,y", bounds:"#drag-zone", 
-                    onDragEnd: function() { 
-                        const h1 = document.getElementById('my-hand').getBoundingClientRect(); 
-                        const h2 = this.target.getBoundingClientRect(); 
-                        if(Math.hypot(h1.x - h2.x, h1.y - h2.y) < 100) { 
-                            confetti({particleCount: 30, spread: 50}); 
-                            gsap.to("#her-hand", {x:0, y:0, duration:0.5}); 
-                            gsap.to("#hand-btn", {opacity:1, pointerEvents:"auto"}); 
-                        } 
-                    } 
-                });
-            }, 100); 
-        }
-
-        function playVoice(src, el) { 
-            pauseBackgroundMusic(); 
-            if(currentVoice) { currentVoice.pause(); currentVoice = null; document.querySelectorAll('.photo-frame').forEach(p => p.classList.remove('playing')); } 
-            currentVoice = new Audio(src); 
-            currentVoice.play().catch(e => console.log("Audio missing or blocked")); 
-            if(el) { el.classList.add('playing'); gsap.to(el, {scale: 1.05, duration: 0.2, yoyo: true, repeat: 1}); } 
-            currentVoice.onended = () => { if(el) el.classList.remove('playing'); currentVoice = null; resumeBackgroundMusic(); }; 
-        }
+        function initHand() { setTimeout(() => { Draggable.create("#her-hand", { type:"x,y", bounds:"#drag-zone", onDragEnd: function() { const h1 = document.getElementById('my-hand').getBoundingClientRect(); const h2 = this.target.getBoundingClientRect(); if(Math.hypot(h1.x - h2.x, h1.y - h2.y) < 100) { confetti({particleCount: 30, spread: 50}); gsap.to("#her-hand", {x:0, y:0, duration:0.5}); gsap.to("#hand-btn", {opacity:1, pointerEvents:"auto"}); } } });}, 100); }
+        function playVoice(src, el) { pauseBackgroundMusic(); if(currentVoice) { currentVoice.pause(); currentVoice = null; document.querySelectorAll('.photo-frame').forEach(p => p.classList.remove('playing')); } currentVoice = new Audio(src); currentVoice.play().catch(e => console.log("Audio missing")); if(el) { el.classList.add('playing'); gsap.to(el, {scale: 1.05, duration: 0.2, yoyo: true, repeat: 1}); } currentVoice.onended = () => { if(el) el.classList.remove('playing'); currentVoice = null; resumeBackgroundMusic(); }; }
         function stopVideo() { const v = document.getElementById('mem-vid'); if(v) v.pause(); resumeBackgroundMusic(); nextChapter(); }
         function stopPhyVideo() { const v = document.getElementById('phy-vid'); if(v) v.pause(); resumeBackgroundMusic(); nextChapter(); }
         function breakMatki() { const m = document.getElementById('matki'); gsap.to(m, {scale:0, opacity:0, duration:0.3, onComplete:()=>{ m.style.display="none"; document.getElementById('matki-secret').classList.remove('hidden'); document.getElementById('matki-secret').classList.add('flex'); confetti({particleCount:100, spread:70}); gsap.to("#matki-btn", {opacity:1, pointerEvents:"auto", delay:1}); }}); }
@@ -1339,7 +814,7 @@
             if(!txt || !sub) return;
             count.innerText = `${i + 1} / ${promises.length}`;
             gsap.to([txt, sub], {opacity:0, y:10, duration:0.2, onComplete:()=>{ txt.innerText = promises[i].text; sub.innerText = promises[i].sub; gsap.to([txt, sub], {opacity:1, y:0, duration:0.5}); }});
-            gsap.to(img, {opacity:0, duration:0.2, onComplete:()=>{ img.src = promises[i].img; img.onerror = function() { this.src=`https://placehold.co/300x400/black/white?text=Promise+${i+1}`; }; img.onload = function() { gsap.to(img, {opacity:0.6, duration:0.5}); };}}); 
+            gsap.to(img, {opacity:0, duration:0.2, onComplete:()=>{ img.src = promises[i].img; img.onerror = function() { this.src=`https://placehold.co/300x400/black/white?text=Promise`; }; img.onload = function() { gsap.to(img, {opacity:0.6, duration:0.5}); };}}); 
         }
         function nextProm() { if (pIdx < promises.length - 1) { pIdx++; loadProm(pIdx); if(pIdx===promises.length-1) document.getElementById("prom-btn").innerText = "Finish Vows"; } else { nextChapter(); } }
         function openSurprise() { gsap.to("#surprise-box", {scale:1.5, opacity:0, duration:0.5, onComplete:()=>{ document.getElementById("surprise-box").style.display="none"; const c = document.getElementById("surprise-content"); c.classList.remove("hidden"); c.classList.add("flex"); gsap.fromTo(c, {scale:0.5, opacity:0}, {scale:1, opacity:1, duration:1, ease:"elastic.out"}); confetti({particleCount:50, spread:70}); }}); }
@@ -1350,16 +825,17 @@
         function checkBucket(el) { if(el.checked) { gsap.to(el.nextElementSibling, {color: "#ec4899", textShadow: "0 0 10px #ec4899", scale: 1.05, duration: 0.2}); confetti({particleCount: 10, spread: 30, origin: {y: 0.5}}); } else { gsap.to(el.nextElementSibling, {color: "#d1d5db", textShadow: "none", scale: 1}); } }
         function startScan() { document.getElementById('scan-line').style.background = '#ec4899'; document.getElementById('scan-msg').innerText = "SCANNING..."; document.getElementById('scan-msg').style.color = "#ec4899"; scanTimer = setTimeout(() => { gsap.to("#print-2", {opacity: 0.5, duration: 2}); gsap.to("#print-1", {x: -10, rotation: -15, color: "#ec4899", duration: 2}); gsap.to("#print-2", {x: 10, rotation: 15, color: "#ec4899", opacity: 0.5, duration: 2}); setTimeout(() => { document.getElementById('scan-msg').innerText = "100% SOULMATE MATCH FOUND"; document.getElementById('scan-line').style.display = 'none'; confetti({particleCount: 50, colors: ['#ec4899']}); gsap.to("#match-btn", {opacity: 1, pointerEvents: "auto"}); }, 2000); }, 500); }
         function stopScan() { clearTimeout(scanTimer); }
-        function playNote(n) { const a = document.getElementById(`vp-${n}`); if(a) { a.currentTime = 0; a.play().catch(e=>{}); } if(navigator.vibrate) navigator.vibrate(30); }
+        function playNote(n) { const a = document.getElementById(`vp-${n}`); a.currentTime = 0; a.play().catch(e=>{}); if(navigator.vibrate) navigator.vibrate(30); }
         function breakGlass() { const glass = document.getElementById('glass-case'); const vidContainer = document.getElementById('comfort-video-container'); const v = document.getElementById('comfort-video'); if(navigator.vibrate) navigator.vibrate([50,50,50]); gsap.to(glass, {scale:1.1, opacity:0, duration:0.2, onComplete:()=>{ glass.style.display="none"; vidContainer.classList.remove('hidden'); v.play().catch(e=>console.log("Video fail")); gsap.to("#break-btn", {opacity:1, pointerEvents:"auto", delay:2}); }}); }
         function updateTimeline(val) { document.getElementById('timeline-year').innerText = val; document.getElementById('old-img').style.opacity = (val - 2024) / 50; }
         
+        function initVideoCall() {}
         function moveEndButton(btn) { gsap.to(btn, {x: (Math.random() - 0.5) * 200, y: (Math.random() - 0.5) * 200, duration: 0.2}); }
         function clickEndButton() {
             const btn = document.getElementById('end-call-btn');
             gsap.to(btn, {scale: 0, opacity: 0, duration: 0.2});
             document.getElementById('call-error').style.display = 'flex';
-            // playVoice('songs1/comfort_voice.mp3', null); 
+            playVoice('songs1/comfort_voice.mp3', null); 
         }
 
         let pokeCount = 0;
