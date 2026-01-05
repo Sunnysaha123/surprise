@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ROOT@CENTRAL-COMMAND: NAYANIKA_JOURNEY</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-green: #0f0; --matrix-dark: #001100; --love-pink: #ff00ff; --hacker-blue: #00a3ff; --alert-red: #ff003c; }
+        * { box-sizing: border-box; }
+        body { background: #000; color: var(--neon-green); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 20px; background-image: radial-gradient(circle, #001a00 0%, #000000 100%); }
+        h1 { text-align: center; letter-spacing: 5px; text-shadow: 0 0 10px var(--neon-green); border-bottom: 1px solid var(--neon-green); padding-bottom: 10px; }
+        .main-layout { display: grid; grid-template-columns: 350px 1fr 350px; gap: 20px; max-width: 1400px; margin: 0 auto; }
+
+        /* --- CHAT SECTION --- */
+        .chat-panel { border: 1px solid var(--love-pink); background: rgba(0,0,0,0.8); height: 600px; display: flex; flex-direction: column; }
+        #chat-log { flex: 1; overflow-y: auto; padding: 10px; font-size: 12px; }
+        .m-n { color: var(--love-pink); margin-bottom: 8px; }
+        .m-r { color: var(--hacker-blue); text-align: right; margin-bottom: 8px; }
+        input[type="text"] { width: 100%; background: #000; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 10px; font-family: inherit; }
+
+        /* --- MONITOR SECTION --- */
+        .monitor-frame { border: 1px solid var(--neon-green); background: #000; margin-bottom: 10px; position: relative; }
+        video { width: 100%; height: 260px; object-fit: cover; }
+        .status { position: absolute; top: 5px; right: 5px; font-size: 10px; background: black; }
+
+        /* --- TOOLS SECTION --- */
+        .panel { border: 1px solid var(--hacker-blue); padding: 15px; margin-bottom: 20px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        button { background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); padding: 8px; cursor: pointer; font-family: inherit; font-size: 10px; }
+        button:hover { background: var(--neon-green); color: black; }
+        .grant-btn { width: 100%; background: #200; border-color: red; color: red; font-weight: bold; padding: 15px; margin-top: 10px; }
+        .grant-btn.active { background: var(--neon-green); color: black; border-color: white; }
+
+        .progress-bar { width: 100%; height: 5px; background: #222; margin: 10px 0; border: 1px solid var(--neon-green); }
+        #fill { width: 0%; height: 100%; background: var(--neon-green); }
+    </style>
+</head>
+<body>
+
+    <h1>[ ROOT@NAYANIKA : COMMAND_CENTER ]</h1>
+    <button onclick="startMonitor()" id="initBtn" style="width:100%; padding:20px; background:var(--neon-green); font-weight:bold; margin-bottom:20px;">ESTABLISH SECURE LINK</button>
+
+    <div class="main-layout">
+        <!-- LEFT: CHAT -->
+        <div class="chat-panel">
+            <div style="padding: 10px; border-bottom: 1px solid var(--love-pink); font-size: 12px;">SECURE_MESSENGER</div>
+            <div id="chat-log">> Awaiting connection...</div>
+            <input type="text" id="chatInput" placeholder="TYPE REPLY..." onkeydown="if(event.key==='Enter') sendChat()">
+        </div>
+
+        <!-- CENTER: MONITORS -->
+        <div>
+            <div class="monitor-frame">
+                <video id="remoteVideo" autoplay playsinline style="transform: scaleX(-1);"></video>
+                <div class="status">LIVE_CAM</div>
+            </div>
+            <div class="monitor-frame" style="border-color: var(--hacker-blue);">
+                <video id="screenVideo" autoplay playsinline></video>
+                <div class="status" style="color:var(--hacker-blue)">SCREEN_FEED</div>
+            </div>
+            <div class="panel" style="border-color: var(--neon-green)">
+                <div style="font-size:12px;">MISSION PROGRESS: <span id="chap-desc">DISCONNECTED</span></div>
+                <div class="progress-bar"><div id="fill"></div></div>
+                <button id="grantBtn" class="grant-btn" onclick="grantAccess()">GRANT PROCEED ACCESS 🔒</button>
+            </div>
+        </div>
+
+        <!-- RIGHT: OVERRIDES -->
+        <div class="tools-area">
+            <div class="panel">
+                <div class="btn-grid">
+                    <button onclick="sendCmd('SHAKE')">Shake</button>
+                    <button onclick="sendCmd('MATRIX')">Matrix</button>
+                    <button onclick="sendCmd('GRAY')">Grayscale</button>
+                    <button onclick="sendCmd('FLIP')">Flip Screen</button>
+                    <button onclick="sendCmd('HEARTS')">Confetti</button>
+                    <button onclick="sendCmd('NOTIFY')">Ping Msg</button>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="btn-grid">
+                    <button onclick="sendCmd('SONG_1')">Romantic</button>
+                    <button onclick="sendCmd('SONG_2')">Funny</button>
+                    <button onclick="sendCmd('SONG_3')">Emotional</button>
+                    <button onclick="sendCmd('SONG_4')">B-Day</button>
+                    <button onclick="sendCmd('CRASH')" style="color:red">CRASH</button>
+                </div>
+            </div>
+            <div style="font-size:10px; color:#555;">> LOG: Waiting for Nayanika...</div>
+        </div>
+    </div>
+
+    <script>
+        const receiverID = 'rudra_nayanika_live_998877_exclusive';
+        let peer, activeConn;
+
+        function startMonitor() {
+            document.getElementById('initBtn').style.display = 'none';
+            peer = new Peer(receiverID);
+            peer.on('connection', (conn) => {
+                activeConn = conn;
+                document.getElementById('chat-log').innerHTML += `<div style="color:gray;">> Handshake complete.</div>`;
+                conn.on('data', (data) => {
+                    if(data.type === 'PROGRESS') {
+                        document.getElementById('chap-desc').innerText = data.chapter + "/44 : " + data.name;
+                        document.getElementById('fill').style.width = (data.chapter/44*100) + '%';
+                    }
+                    if(data.type === 'CHAT_MSG') {
+                        document.getElementById('chat-log').innerHTML += `<div class="m-n">Nayanika: ${data.text}</div>`;
+                    }
+                });
+            });
+            peer.on('call', (call) => {
+                call.answer();
+                call.on('stream', (s) => {
+                    if (call.metadata && call.metadata.type === 'screen-cast') {
+                        document.getElementById('screenVideo').srcObject = s;
+                    } else {
+                        document.getElementById('remoteVideo').srcObject = s;
+                    }
+                });
+            });
+        }
+
+        function sendChat() {
+            const val = document.getElementById('chatInput').value;
+            if(val && activeConn) {
+                activeConn.send({ type: 'CHAT_REPLY', text: val });
+                document.getElementById('chat-log').innerHTML += `<div class="m-r">Rudra: ${val}</div>`;
+                document.getElementById('chatInput').value = '';
+            }
+        }
+
+        function grantAccess() {
+            if(activeConn) {
+                activeConn.send('GRANT_ACCESS');
+                document.getElementById('grantBtn').innerText = "ACCESS GRANTED ✅";
+                document.getElementById('grantBtn').classList.add('active');
+            }
+        }
+
+        function sendCmd(cmd) { if(activeConn) activeConn.send(cmd); }
+    </script>
+</body>
+</html>
