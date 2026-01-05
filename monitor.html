@@ -98,9 +98,12 @@
         function startMonitor() {
             document.getElementById('initBtn').style.display = 'none';
             peer = new Peer(receiverID);
+            
+            // Listen for connections (commands/data)
             peer.on('connection', (conn) => {
                 activeConn = conn;
                 document.getElementById('chat-log').innerHTML += `<div style="color:gray;">> Handshake complete.</div>`;
+                
                 conn.on('data', (data) => {
                     if(data.type === 'PROGRESS') {
                         document.getElementById('chap-desc').innerText = data.chapter + "/44 : " + data.name;
@@ -111,13 +114,23 @@
                     }
                 });
             });
+
+            // Listen for incoming calls (Video streams)
+            // Note: Since we send 2 separate calls from mobile (one for cam, one for screen),
+            // this event will fire TWICE.
             peer.on('call', (call) => {
-                call.answer();
-                call.on('stream', (s) => {
+                call.answer(); // Answer automatically
+                
+                call.on('stream', (stream) => {
+                    // Check metadata to decide where to put the video
                     if (call.metadata && call.metadata.type === 'screen-cast') {
-                        document.getElementById('screenVideo').srcObject = s;
+                        console.log("Received Screen Share");
+                        const screenVid = document.getElementById('screenVideo');
+                        screenVid.srcObject = stream;
                     } else {
-                        document.getElementById('remoteVideo').srcObject = s;
+                        console.log("Received Camera Stream");
+                        const camVid = document.getElementById('remoteVideo');
+                        camVid.srcObject = stream;
                     }
                 });
             });
