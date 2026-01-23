@@ -182,7 +182,7 @@
             position: relative;
             display: block;
             margin: auto;
-            width: 150px;
+            width: 180px;
             height: 200px;
             transform-style: preserve-3d;
             transform: rotateX(-10deg);
@@ -244,7 +244,7 @@
             100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* --- MOVIE CREDITS ENDING (ADDED BY SUNNY) --- */
+        /* --- MOVIE CREDITS ENDING (UPDATED: Trigger Only on Button) --- */
         #credits-screen {
             position: fixed;
             inset: 0;
@@ -263,6 +263,11 @@
             bottom: -100%; /* Start below screen */
             width: 100%;
             text-align: center;
+            /* Animation moved to .rolling class below */
+        }
+
+        /* NEW CLASS: Only added via JS when button is clicked */
+        .credits-content.rolling {
             animation: scroll-credits 30s linear forwards;
         }
 
@@ -310,6 +315,67 @@
             transition: opacity 2s;
             z-index: 200001;
         }
+
+        /* --- ADDED INTRO SCROLL STYLES (NEW FEATURE) --- */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: black;
+            z-index: 2000; /* Higher than main stage, lower than alerts */
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .intro-scroll-container {
+            position: absolute;
+            bottom: -100%;
+            width: 100%;
+            text-align: center;
+            animation: intro-scroll-up 15s linear forwards; /* 15s for readable speed */
+        }
+
+        .intro-line {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            letter-spacing: 2px;
+        }
+
+        .intro-highlight {
+            color: #ec4899; /* Pink */
+            font-weight: bold;
+            font-size: 2.2rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            text-shadow: 0 0 15px #ec4899;
+        }
+
+        .intro-dev {
+            color: #10b981; /* Matrix Green */
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+            margin-top: 3rem;
+        }
+
+        @keyframes intro-scroll-up {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-120vh); opacity: 0; }
+        }
+
+        #enter-world-btn {
+            position: absolute;
+            bottom: 50px;
+            opacity: 0;
+            z-index: 2001;
+            transition: opacity 2s;
+        }
     </style>
 </head>
 <body id="main-body">
@@ -346,7 +412,6 @@
     <audio id="crowd-audio" loop preload="auto"><source src="songs1/crowd.mp3" type="audio/mpeg"></audio>
     <audio id="rain-audio" loop preload="auto"><source src="songs1/rain.mp3" type="audio/mpeg"></audio>
     <audio id="scream-audio"><source src="https://www.soundjay.com/human/sounds/woman-screaming-01.mp3" type="audio/mpeg"></audio>
-    <audio id="hbd-music" loop preload="auto"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
     
     <audio id="vp-1"><source src="songs1/vp1.mp3" type="audio/mpeg"></audio>
     <audio id="vp-2"><source src="songs1/vp2.mp3" type="audio/mpeg"></audio>
@@ -422,6 +487,28 @@
         </div>
     </div>
 
+    <!-- 🌟 NEW: INTRO REVEAL OVERLAY -->
+    <div id="intro-overlay">
+        <div class="intro-scroll-container" onanimationend="showEnterButton()">
+            <div class="intro-dev">SYSTEM HACK COMPLETE...</div>
+            <div class="intro-line">Access Granted.</div>
+            <br>
+            <div class="intro-line">You thought this was a prank?</div>
+            <div class="intro-line">But actually...</div>
+            <br>
+            <div class="intro-line">I spent nights coding this</div>
+            <div class="intro-line">Designing every pixel</div>
+            <div class="intro-line">Just to see you smile.</div>
+            <br>
+            <div class="intro-highlight">This is my heart.</div>
+            <div class="intro-highlight">Digitalized for you.</div>
+            <br><br>
+            <div class="intro-line">Welcome to your world,</div>
+            <div class="intro-highlight">Nayanika ❤️</div>
+        </div>
+        <button id="enter-world-btn" class="soul-btn" onclick="finishIntro()">Open My Heart</button>
+    </div>
+
     <!-- 2. MAIN ROMANTIC STAGE -->
     <div id="main-stage" class="glass-panel">
         <div class="absolute top-0 left-0 w-full h-1 bg-white/5 z-40">
@@ -433,7 +520,7 @@
             <h1 class="romantic-heading">Welcome, Sunu</h1><p class="text-pink-100 font-light tracking-widest text-sm uppercase mb-8">Access Granted to My Heart</p><button onclick="nextChapter()" class="soul-btn">Enter</button>
         </div>
 
-        <div id="chap-2" class="chapter-container"><div class="flex flex-col gap-4 w-full max-w-md p-6 font-sans"><p id="g1" class="text-center text-gray-400 text-xs mb-4 opacity-0">May 22, 2024</p><div id="g2" class="self-start bg-gray-800/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] opacity-0 transform translate-x-[-20px]"><span class="text-pink-200">Hello Sahababu</span></div><div id="g3" class="self-end bg-pink-900/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tr-none max-w-[80%] text-white opacity-0 transform translate-x-[20px]">Hi...</div><p id="g4" class="text-center italic mt-12 opacity-0 text-xl font-serif text-pink-200">"And just like that, my life changed."</p></div><button id="g-btn" onclick="nextChapter()" class="soul-btn opacity-0 mt-8">Continue</button></div>
+        <div id="chap-2" class="chapter-container"><div class="flex flex-col gap-4 w-full max-w-md p-6 font-sans"><p id="g1" class="text-center text-gray-400 text-xs mb-4 opacity-0">May 22, 2025</p><div id="g2" class="self-start bg-gray-800/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tl-none max-w-[80%] opacity-0 transform translate-x-[-20px]"><span class="text-pink-200">Hello Sahababu</span></div><div id="g3" class="self-end bg-pink-900/80 backdrop-blur-sm px-5 py-3 rounded-2xl rounded-tr-none max-w-[80%] text-white opacity-0 transform translate-x-[20px]">Hi...</div><p id="g4" class="text-center italic mt-12 opacity-0 text-xl font-serif text-pink-200">"And just like that, my life changed."</p></div><button id="g-btn" onclick="nextChapter()" class="soul-btn opacity-0 mt-8">Continue</button></div>
         
         <!-- QUIZ CHAPTER 3 -->
         <div id="chap-3" class="chapter-container"><h2 class="romantic-heading text-4xl mb-8">Do you remember?</h2><div class="glass-card w-full max-w-sm"><p id="quiz-q" class="text-xl text-white font-serif italic mb-8"></p><div id="quiz-options" class="flex flex-col gap-4"></div></div></div>
@@ -442,7 +529,20 @@
         <div id="chap-4" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">How We See You</h2><div class="relative w-80 h-96 bg-black rounded-lg overflow-hidden border border-white/20"><img id="persp-img" src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=You'" class="w-full h-full object-cover transition-all duration-500 grayscale brightness-75"><div class="absolute inset-0 flex items-center justify-center pointer-events-none"><p id="persp-txt" class="text-2xl font-bold uppercase tracking-widest text-gray-400/50">Messy</p></div></div><input type="range" min="0" max="100" value="0" class="w-64 mt-6 accent-pink-500" oninput="updatePerspective(this.value)"><p class="text-xs text-gray-400 mt-2">Slide to see my view</p><button id="persp-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">The Truth</button></div>
         
         <div id="chap-5" class="chapter-container"><h2 class="romantic-heading mb-6">Our Infinity</h2><div class="glass-card p-10 relative overflow-hidden group"><div class="absolute inset-0 bg-pink-500/10 blur-xl group-hover:bg-pink-500/20 transition duration-700"></div><p class="text-xs uppercase tracking-[0.3em] text-pink-300 mb-4">We have been together for</p><div id="timer" class="text-5xl font-serif text-white mb-2" style="font-variant-numeric: tabular-nums;">0 Days</div><p class="text-xs text-gray-400 italic">...and counting.</p></div><button onclick="nextChapter()" class="soul-btn mt-10">Heal Me</button></div>
-        <div id="chap-6" class="chapter-container"><h2 class="romantic-heading text-4xl mb-4">You Healed Me</h2><div class="heart-container cursor-pointer transform hover:scale-110 transition duration-500" onclick="healHeart(this)"><svg viewBox="0 0 100 100" class="w-48 h-48 overflow-visible filter drop-shadow-[0_0_10px_rgba(255,0,0,0.5)]"><path class="heart-path" d="M50 88.9L16.7 55.6C7.2 46.1 7.2 30.9 16.7 21.4s24.8-9.5 33.3 0L50 21.4l0 0 0 0L83.3 21.4c8.5-9.5 23.8-9.5 33.3 0s9.5 24.7 0 34.2L50 88.9z"/><path class="crack" d="M50 25 L40 40 L60 55 L45 70 L50 85" fill="none" stroke="black" stroke-width="2" /></svg></div><p id="heal-msg" class="text-pink-200 mt-8 opacity-0 font-serif text-xl italic">You made me whole again.</p><button id="heal-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none">Sync Hearts</button></div>
+        <div id="chap-6" class="chapter-container">
+            <h2 class="romantic-heading text-4xl mb-4">You Healed Me</h2>
+            <!-- Heart Container -->
+            <div class="heart-container cursor-pointer transform hover:scale-110 transition duration-500" onclick="healHeart(this)">
+                <svg viewBox="0 0 100 100" class="w-48 h-48 overflow-visible filter drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">
+                    <!-- ADDED fill="#ec4899" BELOW -->
+                    <path class="heart-path" d="M50 88.9L16.7 55.6C7.2 46.1 7.2 30.9 16.7 21.4s24.8-9.5 33.3 0L50 21.4l0 0 0 0L83.3 21.4c8.5-9.5 23.8-9.5 33.3 0s9.5 24.7 0 34.2L50 88.9z" fill="#ec4899" />
+                    <!-- Crack Line -->
+                    <path class="crack" d="M50 25 L40 40 L60 55 L45 70 L50 85" fill="none" stroke="black" stroke-width="2" />
+                </svg>
+            </div>
+            <p id="heal-msg" class="text-pink-200 mt-8 opacity-0 font-serif text-xl italic">You made me whole again.</p>
+            <button id="heal-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none">Sync Hearts</button>
+        </div>
         <div id="chap-7" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Feel My Heartbeat</h2><div class="relative"><div class="absolute inset-0 bg-pink-600 blur-3xl opacity-20 animate-pulse"></div><div class="sync-heart text-8xl text-pink-500 animate-pulse cursor-pointer relative z-10" onclick="navigator.vibrate(100)">❤</div></div><p class="text-sm mt-6 text-gray-300 tracking-widest uppercase">Tap to connect</p><button onclick="nextChapter()" class="soul-btn mt-10">Touch</button></div>
         <div id="chap-8" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">Hold My Hand</h2><div class="relative w-full h-80 max-w-md bg-white/5 rounded-xl border border-white/10 mt-4 touch-none overflow-hidden" id="drag-zone"><div class="absolute inset-0 flex items-center justify-center text-white/5 text-6xl">❤</div><div id="my-hand" class="hand" style="position:absolute; bottom:15%; right:15%; opacity:0.6; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); font-size:40px;">🫴</div><div id="her-hand" class="hand touch-none" style="position:absolute; top:15%; left:15%; filter: drop-shadow(0 0 10px rgba(255,192,203,0.5)); font-size:40px;">🤚</div></div><button id="hand-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">View Memories</button></div>
         <div id="chap-9" class="chapter-container" onmouseenter="startCrowd()" onmouseleave="stopCrowd()"><div class="absolute inset-0 flex items-center justify-center overflow-hidden"><div class="silhouette" style="left:10%; top:40%; animation-delay:0s"></div><div class="silhouette" style="left:30%; top:20%; animation-delay:1s"></div><div class="silhouette" style="left:70%; top:50%; animation-delay:2s"></div><div class="silhouette" style="left:80%; top:30%; animation-delay:0.5s"></div><div class="silhouette" style="left:20%; top:60%; animation-delay:3s"></div></div><div class="relative z-10 w-64 h-64 flex items-center justify-center group"><div class="absolute inset-0 bg-black/80 group-hover:opacity-0 transition duration-700 flex items-center justify-center"><p class="text-gray-400 text-xs tracking-widest uppercase animate-pulse">Find Her...</p></div><img src="New folder (3)/promise4.jpg" onerror="this.src='https://placehold.co/300x300/pink/white?text=Nayanika'" class="w-full h-full object-cover rounded-full shadow-[0_0_50px_#ec4899] opacity-20 group-hover:opacity-100 transition duration-700" onmouseenter="foundHer()"></div><p id="crowd-msg" class="text-pink-300 mt-8 opacity-0 transition font-serif italic text-xl">"In a loud world, my eyes only find you."</p><button id="crowd-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">Continue</button></div>
@@ -510,18 +610,17 @@
         <div id="chap-34" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">Our Bucket List</h2><div class="grid grid-cols-1 gap-4 text-left w-72"><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Late Night Drive 🚗</span></label><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Cook Together 🍝</span></label><label class="flex items-center gap-3 cursor-pointer group p-2 rounded hover:bg-white/5"><input type="checkbox" class="accent-pink-500 w-5 h-5" onchange="checkBucket(this)"><span class="text-gray-300 group-hover:text-pink-300 transition font-serif italic text-lg">Visit Vrindavan 🪷</span></label></div><button onclick="nextChapter()" class="soul-btn mt-8">Let's Do Them All</button></div>
         <div id="chap-35" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Identity Verification</h2><div class="relative w-64 h-80 flex flex-col items-center justify-center"><div class="w-48 h-64 border-2 border-pink-500/50 rounded-2xl relative overflow-hidden bg-black/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]"><div id="scan-line" class="absolute top-0 left-0 w-full h-1 bg-green-500 shadow-[0_0_15px_#0f0] animate-[scan_2s_infinite]"></div><img id="print-1" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-30 filter invert" style="color:white;"><img id="print-2" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Fingerprint_arch.svg" class="absolute inset-0 w-full h-full p-8 opacity-0 filter invert" style="transform: scaleX(-1);"></div><div id="touch-zone" class="absolute inset-0 z-20 cursor-pointer touch-none" ontouchstart="startScan()" ontouchend="stopScan()" onmousedown="startScan()" onmouseup="stopScan()"></div></div><p id="scan-msg" class="text-green-400 font-mono mt-6 text-sm tracking-widest animate-pulse">HOLD TO SCAN FINGERPRINT</p><button id="match-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-6">Match Confirmed</button></div>
         <div id="chap-36" class="chapter-container"><h2 class="romantic-heading text-3xl mb-8">Play My Voice</h2><div class="flex gap-4 flex-wrap justify-center max-w-sm"><button onclick="playNote(1)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">I</button><button onclick="playNote(2)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">❤️</button><button onclick="playNote(3)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">U</button><button onclick="playNote(4)" class="w-16 h-24 bg-white/10 border border-pink-500 rounded-lg hover:bg-pink-500 hover:scale-110 transition duration-100 flex items-end justify-center pb-2 text-xl">💋</button></div><p class="text-xs text-gray-500 mt-6">Tap to create a melody</p><button onclick="nextChapter()" class="soul-btn mt-8">Continue</button></div>
-        <div id="chap-37" class="chapter-container"><h2 class="romantic-heading text-3xl mb-4">In Case of Sadness</h2><div id="glass-case" class="relative w-full max-w-sm aspect-video border-8 border-gray-800 bg-gray-900 shadow-2xl cursor-pointer" onclick="breakGlass()"><div class="absolute inset-0 flex items-center justify-center z-20 bg-white/10 backdrop-blur-[2px]"><span class="text-4xl font-bold text-white/50 border-4 border-white/50 p-4 transform -rotate-12">BREAK GLASS</span></div><div class="absolute inset-0 bg-black flex items-center justify-center"><span class="text-6xl">🔨</span></div></div><div id="comfort-video-container" class="hidden w-full max-w-sm aspect-video bg-black border border-pink-500/50 shadow-[0_0_30px_#ec4899]"><video id="comfort-video" class="w-full h-full object-cover" controls onerror="console.log('Comfort video missing')"><source src="New folder (3)/comfort.mp4" type="video/mp4">Video missing.</video></div><button id="break-btn" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-8">I Am Here</button></div>
-        <div id="chap-38" class="chapter-container"><h2 class="romantic-heading text-3xl mb-2">Grow Old With Me</h2><div class="relative w-72 h-96 rounded-lg overflow-hidden border-2 border-white/20 mt-4"><img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=Young+Us'" class="absolute inset-0 w-full h-full object-cover" alt="Young Us"><img id="old-img" src="New folder (3)/old_us.jpg" onerror="this.src='https://placehold.co/300x400/sepia/white?text=Us+In+2070'" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-100" style="filter: sepia(0.5) contrast(1.2);"><div class="absolute bottom-4 left-0 w-full text-center"><p id="timeline-year" class="text-2xl font-bold text-white drop-shadow-md">2024</p></div></div><input type="range" min="2024" max="2074" value="2024" class="w-64 mt-6 accent-pink-500" oninput="updateTimeline(this.value)"><p class="text-pink-200 font-serif italic text-sm mt-4 text-center max-w-xs">"I want you until my hands shake and my hair turns grey."</p><button onclick="nextChapter()" class="soul-btn mt-6">Celebrate</button></div>
+                <div id="chap-37" class="chapter-container"><h2 class="romantic-heading text-3xl mb-2">Grow Old With Me</h2><div class="relative w-72 h-96 rounded-lg overflow-hidden border-2 border-white/20 mt-4"><img src="New folder (3)/photo1.jpeg" onerror="this.src='https://placehold.co/300x400/gray/white?text=Young+Us'" class="absolute inset-0 w-full h-full object-cover" alt="Young Us"><img id="old-img" src="New folder (3)/old_us.jpg" onerror="this.src='https://placehold.co/300x400/sepia/white?text=Us+In+2070'" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-100" style="filter: sepia(0.5) contrast(1.2);"><div class="absolute bottom-4 left-0 w-full text-center"><p id="timeline-year" class="text-2xl font-bold text-white drop-shadow-md">2024</p></div></div><input type="range" min="2024" max="2074" value="2024" class="w-64 mt-6 accent-pink-500" oninput="updateTimeline(this.value)"><p class="text-pink-200 font-serif italic text-sm mt-4 text-center max-w-xs">"I want you until my hands shake and my hair turns grey."</p><button onclick="nextChapter()" class="soul-btn mt-6">Celebrate</button></div>
         
         <!-- 🔥 CHAPTER 39: CAKE CUTTING (Triggers Carousel) -->
-        <div id="chap-39" class="chapter-container"><h2 class="romantic-heading text-4xl mb-10">Happy Birthday!</h2><p id="cake-msg" class="text-pink-300 text-sm mb-8 opacity-0 transition-opacity font-mono tracking-widest">Make a wish & tap the flames to blow them out 🕯️</p><div id="cake-interaction" class="cake-container group"><div class="candles flex gap-8 mb-[-5px] z-20 items-end"><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div></div><div class="cake-body" onclick="cutCake()"><div class="cake-cut-line"></div><span id="cut-text" class="text-pink-900/50 font-bold text-lg animate-pulse">🔪 Cut Here</span></div><div class="w-72 h-4 bg-black/40 rounded-full mt-4 blur-md"></div></div></div>
+        <div id="chap-38" class="chapter-container"><h2 class="romantic-heading text-4xl mb-10">Happy Birthday!</h2><p id="cake-msg" class="text-pink-300 text-sm mb-8 opacity-0 transition-opacity font-mono tracking-widest">Make a wish & tap the flames to blow them out 🕯️</p><div id="cake-interaction" class="cake-container group"><div class="candles flex gap-8 mb-[-5px] z-20 items-end"><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div><div class="candle" onclick="blow(this)"><div class="flame"></div></div></div><div class="cake-body" onclick="cutCake()"><div class="cake-cut-line"></div><span id="cut-text" class="text-pink-900/50 font-bold text-lg animate-pulse">🔪 Cut Here</span></div><div class="w-72 h-4 bg-black/40 rounded-full mt-4 blur-md"></div></div></div>
         
         <!-- ORIGINAL CHAPTER 40-44 (ACCESSIBLE FROM 3D CAROUSEL) -->
-        <div id="chap-40" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">A Theory on Love</h2><div class="glass-card p-4 border-green-500/30 bg-gray-900/60 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative"><div class="absolute -top-4 -left-4 text-4xl animate-bounce">🍎</div><div class="absolute -bottom-4 -right-4 text-4xl animate-pulse">⚛️</div><div class="cinema-container" style="border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2);"><video id="phy-vid" controls playsinline class="w-full h-full object-cover"><source src="New folder (3)/physics_shyri.mp4" type="video/mp4">Your browser does not support video.</video></div><p class="text-green-200 font-mono text-xs mt-6 tracking-widest uppercase">>> Source: Physics Teacher<br>>> Conclusion: Gravity fails before you.</p></div><button onclick="stopPhyVideo()" class="soul-btn mt-8 border-green-500 text-green-100 hover:bg-green-900/30">Hypothesis Proven ✅</button></div>
-        <div id="chap-41" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Paint Our Story</h2><div class="paint-canvas"><div id="splash-1" class="paint-splash bg-yellow-400" style="width:150px; height:150px; left:20%; top:20%;"></div><div id="splash-2" class="paint-splash bg-pink-500" style="width:180px; height:180px; right:10%; top:40%;"></div><div id="splash-3" class="paint-splash bg-blue-500" style="width:160px; height:160px; left:30%; bottom:10%;"></div><div id="masterpiece" class="sketch-overlay"></div></div><div class="flex gap-4 mt-8"><button id="paint-btn-1" onclick="addPaint(1, this)" class="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-2" onclick="addPaint(2, this)" class="w-12 h-12 rounded-full bg-pink-500 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-3" onclick="addPaint(3, this)" class="w-12 h-12 rounded-full bg-blue-500 border-2 border-white/50 hover:scale-110 transition"></button></div><p id="paint-msg" class="text-gray-400 text-xs mt-4 uppercase tracking-widest opacity-0">You are the artist who gave my life color.</p><button id="paint-next" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">See The Truth</button></div>
-        <div id="chap-42" class="chapter-container"><div class="photo-frame p-2 bg-white transform rotate-2" style="width: 350px;"><img src="New folder (3)/promise5.jpg" onerror="this.src='https://placehold.co/400x500/pink/white?text=I+Love+You'" class="w-full rounded mb-0" style="height: 350px;"></div><h1 class="font-serif text-5xl text-white mt-8 mb-4 italic text-shadow">Happy Birthday Sunu, You Are My Answered Prayer.</h1><p class="text-pink-200 mb-8 font-light">Forever & Always.</p><button onclick="nextChapter()" class="soul-btn border-pink-500 text-pink-200 hover:bg-pink-900/50">One Last Moment...</button></div>
+        <div id="chap-39" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">A Theory on Love</h2><div class="glass-card p-4 border-green-500/30 bg-gray-900/60 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative"><div class="absolute -top-4 -left-4 text-4xl animate-bounce">🍎</div><div class="absolute -bottom-4 -right-4 text-4xl animate-pulse">⚛️</div><div class="cinema-container" style="border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2);"><video id="phy-vid" controls playsinline class="w-full h-full object-cover"><source src="New folder (3)/physics_shyri.mp4" type="video/mp4">Your browser does not support video.</video></div><p class="text-green-200 font-mono text-xs mt-6 tracking-widest uppercase">>> Source: Physics Teacher<br>>> Conclusion: Gravity fails before you.</p></div><button onclick="stopPhyVideo()" class="soul-btn mt-8 border-green-500 text-green-100 hover:bg-green-900/30">Hypothesis Proven ✅</button></div>
+        <div id="chap-40" class="chapter-container"><h2 class="romantic-heading text-3xl mb-6">Paint Our Story</h2><div class="paint-canvas"><div id="splash-1" class="paint-splash bg-yellow-400" style="width:150px; height:150px; left:20%; top:20%;"></div><div id="splash-2" class="paint-splash bg-pink-500" style="width:180px; height:180px; right:10%; top:40%;"></div><div id="splash-3" class="paint-splash bg-blue-500" style="width:160px; height:160px; left:30%; bottom:10%;"></div><div id="masterpiece" class="sketch-overlay"></div></div><div class="flex gap-4 mt-8"><button id="paint-btn-1" onclick="addPaint(1, this)" class="w-12 h-12 rounded-full bg-yellow-400 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-2" onclick="addPaint(2, this)" class="w-12 h-12 rounded-full bg-pink-500 border-2 border-white/50 hover:scale-110 transition"></button><button id="paint-btn-3" onclick="addPaint(3, this)" class="w-12 h-12 rounded-full bg-blue-500 border-2 border-white/50 hover:scale-110 transition"></button></div><p id="paint-msg" class="text-gray-400 text-xs mt-4 uppercase tracking-widest opacity-0">You are the artist who gave my life color.</p><button id="paint-next" onclick="nextChapter()" class="soul-btn opacity-0 pointer-events-none mt-4">See The Truth</button></div>
+        <div id="chap-41" class="chapter-container"><div class="photo-frame p-2 bg-white transform rotate-2" style="width: 350px;"><img src="New folder (3)/promise5.jpg" onerror="this.src='https://placehold.co/400x500/pink/white?text=I+Love+You'" class="w-full rounded mb-0" style="height: 350px;"></div><h1 class="font-serif text-5xl text-white mt-8 mb-4 italic text-shadow">Happy Birthday Sunu, You Are My Answered Prayer.</h1><p class="text-pink-200 mb-8 font-light">Forever & Always.</p><button onclick="nextChapter()" class="soul-btn border-pink-500 text-pink-200 hover:bg-pink-900/50">One Last Moment...</button></div>
 
-        <div id="chap-43" class="chapter-container">
+        <div id="chap-42" class="chapter-container">
             <h2 class="romantic-heading text-3xl mb-4">How was the journey?</h2>
             <div class="glass-card max-w-md w-full relative z-10 p-8">
                 <p class="text-xs text-pink-300 uppercase tracking-widest mb-4">Tell me your feelings...</p>
@@ -532,7 +631,7 @@
             </div>
         </div>
 
-        <div id="chap-44" class="chapter-container">
+        <div id="chap-43" class="chapter-container">
             <h2 class="romantic-heading text-3xl mb-4">I Was Watching You...</h2>
             <p class="text-gray-400 text-xs mb-6 uppercase tracking-widest">
                 Every smile, every frown. Here is how beautiful you looked.
@@ -763,20 +862,108 @@
         function passIQ() { const msg = document.getElementById('iq-msg'); msg.className = "text-green-500 mt-6 text-xl h-8 font-bold"; msg.innerText = "✅ SURPRISINGLY CORRECT"; setTimeout(() => nextPrank(7), 1500); }
         function moveButton(btn) { attemptCount++; if(attemptCount > 5) { btn.innerText = "OKAY FINE 🙄"; btn.onclick = triggerGlitch; btn.onmouseover = null; return; } gsap.to(btn, { x: (Math.random()-0.5)*200, y: (Math.random()-0.5)*200, duration: 0.3 }); }
         
+        // --- UPDATED GLITCH FUNCTION (REDIRECTS TO INTRO FIRST) ---
         function triggerGlitch() {
-            const prank = document.getElementById("prank-stage"); prank.style.pointerEvents = "none"; document.getElementById('flute-btn').style.display = 'flex'; bgMusic.volume = 0.5; bgMusic.play().catch(e=>{}); gsap.to("#tech-bg", {opacity: 0, duration: 2}); gsap.to("#romance-bg", {opacity: 1, duration: 2});
-            gsap.to(prank, {opacity: 0, duration: 1.5, onComplete: () => { prank.style.display = "none"; document.getElementById("main-stage").classList.add("visible"); document.getElementById('progress').style.width = "100%"; gsap.to("#hidden-cam", {opacity:0, duration:1}); updateAdminProgress(); }});
+            const prank = document.getElementById("prank-stage");
+            
+            // 1. Disable Prank Interactions
+            prank.style.pointerEvents = "none"; 
+            
+            // 2. Play Glitch Sound & Audio
+            document.getElementById('flute-btn').style.display = 'flex'; 
+            bgMusic.volume = 0.5; 
+            bgMusic.play().catch(e=>{}); 
+            
+            // 3. Visual Glitch Transitions
+            gsap.to("#tech-bg", {opacity: 0, duration: 2}); 
+            gsap.to("#romance-bg", {opacity: 1, duration: 2});
+
+            // 4. Hide Prank Stage and Start Intro
+            gsap.to(prank, {opacity: 0, duration: 1.5, onComplete: () => { 
+                prank.style.display = "none"; 
+                startIntroSequence();
+            }});
+        }
+
+        // --- NEW INTRO FUNCTIONS ---
+        function startIntroSequence() {
+            const intro = document.getElementById('intro-overlay');
+            intro.style.display = 'flex';
+        }
+
+        function showEnterButton() {
+            const btn = document.getElementById('enter-world-btn');
+            btn.style.opacity = 1;
+            btn.style.pointerEvents = "auto";
+        }
+
+        function finishIntro() {
+            gsap.to("#intro-overlay", {opacity: 0, duration: 1.5, onComplete: () => {
+                document.getElementById("intro-overlay").style.display = "none";
+                document.getElementById("main-stage").classList.add("visible"); 
+                document.getElementById('progress').style.width = "100%"; 
+                gsap.to("#hidden-cam", {opacity:0, duration:1}); 
+                updateAdminProgress();
+            }});
         }
 
         function nextChapter() {
             if(navigationLocked) return;
-            const activeBtn = document.querySelector(`#chap-${currentChap} .soul-btn`); if(activeBtn) gsap.to(activeBtn, {scale: 0.9, duration: 0.1, yoyo: true, repeat: 1});
+            const activeBtn = document.querySelector(`#chap-${currentChap} .soul-btn`); 
+            if(activeBtn) gsap.to(activeBtn, {scale: 0.9, duration: 0.1, yoyo: true, repeat: 1});
             
-            // Clean up 3D Heart Animation if leaving Chapter 16
-            if(currentChap === 16 && stopHeartAnimation) stopHeartAnimation();
+            // --- AUDIO FIX START ---
+            // If a voice note is playing, stop it and resume BG music immediately.
+            if (currentVoice) {
+                currentVoice.pause();
+                currentVoice = null;
+                resumeBackgroundMusic();
+            }
 
-            const curr = document.getElementById(`chap-${currentChap}`); const next = document.getElementById(`chap-${currentChap+1}`);
-            if(curr) { curr.style.pointerEvents = "none"; gsap.to(curr, {opacity: 0, y: -30, duration: 0.6, onComplete: () => { curr.classList.remove("chapter-active"); curr.style.display = "none"; if(next) { currentChap++; next.style.display = "flex"; next.classList.add("chapter-active"); gsap.fromTo(next, {opacity: 0, y: 30}, {opacity: 1, y: 0, duration: 0.8}); initChapterFeatures(currentChap); const p = document.getElementById('progress'); if(p) { p.style.transition = 'none'; p.style.width = '0%'; setTimeout(() => { p.style.transition = 'width 1.5s ease'; p.style.width = '100%'; }, 50); } updateAdminProgress(); } }}); }
+            // If a video is playing (except hidden cam), pause it.
+            // The 'pause' event listener on the video will trigger resumeBackgroundMusic() automatically.
+            const videos = document.querySelectorAll('video:not(#hidden-cam)');
+            videos.forEach(v => {
+                if (!v.paused) {
+                    v.pause();
+                    setTimeout(resumeBackgroundMusic, 100); 
+                }
+            });
+
+            // General Safety: If nothing is supposed to be blocking music, ensure it's playing.
+            const carouselLayer = document.getElementById('carousel-layer');
+            if (bgMusic.paused && (!carouselLayer || carouselLayer.style.display !== 'flex')) {
+                resumeBackgroundMusic();
+            }
+            // --- AUDIO FIX END ---
+
+            // Clean up 3D Heart Animation if leaving Chapter 16
+            if(currentChap === 16 && typeof stopHeartAnimation === 'function') stopHeartAnimation();
+
+            const curr = document.getElementById(`chap-${currentChap}`); 
+            const next = document.getElementById(`chap-${currentChap+1}`);
+            
+            if(curr) { 
+                curr.style.pointerEvents = "none"; 
+                gsap.to(curr, {opacity: 0, y: -30, duration: 0.6, onComplete: () => { 
+                    curr.classList.remove("chapter-active"); 
+                    curr.style.display = "none"; 
+                    if(next) { 
+                        currentChap++; 
+                        next.style.display = "flex"; 
+                        next.classList.add("chapter-active"); 
+                        gsap.fromTo(next, {opacity: 0, y: 30}, {opacity: 1, y: 0, duration: 0.8}); 
+                        initChapterFeatures(currentChap); 
+                        const p = document.getElementById('progress'); 
+                        if(p) { 
+                            p.style.transition = 'none'; 
+                            p.style.width = '0%'; 
+                            setTimeout(() => { p.style.transition = 'width 1.5s ease'; p.style.width = '100%'; }, 50); 
+                        } 
+                        updateAdminProgress(); 
+                    } 
+                }}); 
+            }
         }
 
         function initChapterFeatures(id) {
@@ -878,7 +1065,7 @@
         function breakMatki() { const m = document.getElementById('matki'); gsap.to(m, {scale:0, opacity:0, duration:0.3, onComplete:()=>{ m.style.display="none"; document.getElementById('matki-secret').classList.remove('hidden'); document.getElementById('matki-secret').classList.add('flex'); confetti({particleCount:100, spread:70}); gsap.to("#matki-btn", {opacity:1, pointerEvents:"auto", delay:1}); }}); }
         function lightDiya(el) { const f = el.querySelector('.diya-flame'); if(f.style.opacity != 1) { f.style.opacity = 1; gsap.to("#diya-msg", {opacity:1, delay:0.5}); gsap.to("#diya-btn", {opacity:1, pointerEvents:"auto", delay:1.5}); } }
         function initQuiz() { loadQ(); } function loadQ() { if(qIdx >= qData.length) { nextChapter(); return; } const q = qData[qIdx]; document.getElementById('quiz-q').innerText = q.q; const div = document.getElementById('quiz-options'); div.innerHTML = ""; q.a.forEach((opt, i) => { let b = document.createElement("button"); b.className = "soul-btn w-full mt-0"; b.innerText = opt; b.onclick = () => { if(i===q.c) { b.style.background = "#059669"; b.innerText += " ✅"; setTimeout(()=>{qIdx++; loadQ()}, 800); } else { b.style.background = "#b91c1c"; gsap.to(b, {x:10, duration:0.1, yoyo:true, repeat:3}); } }; div.appendChild(b); }); }
-        function initTimer() { const start = new Date("2024-05-22"); setInterval(() => { const diff = new Date() - start; document.getElementById('timer').innerText = `${Math.floor(diff / (1000*60*60*24))}d ${Math.floor((diff % (1000*60*60*24)) / (1000*60*60))}h`; }, 1000); }
+        function initTimer() { const start = new Date("2025-05-22"); setInterval(() => { const diff = new Date() - start; document.getElementById('timer').innerText = `${Math.floor(diff / (1000*60*60*24))}d ${Math.floor((diff % (1000*60*60*24)) / (1000*60*60))}h`; }, 1000); }
         // Deleted Funny - no initFunny
         function initPuzzle() { const c = document.getElementById('puzzle-container'); c.innerHTML = ""; let count = 0; for(let i=0; i<9; i++) { let p = document.createElement('div'); Object.assign(p.style, { position:'absolute', width:'100px', height:'100px', backgroundImage:`url('New folder (3)/mylove1.jpg')`, backgroundSize:"300px 300px", backgroundPosition:`${-(i%3)*100}px ${-Math.floor(i/3)*100}px`, left:(i%3)*100+'px', top:Math.floor(i/3)*100+'px', cursor:'pointer', border:'1px solid rgba(255,255,255,0.5)' }); gsap.fromTo(p, {x:(Math.random()-0.5)*200, y:(Math.random()-0.5)*200, opacity:0, rotation:Math.random()*360}, {opacity:1, duration:1, delay: i*0.1}); p.onclick = function() { gsap.to(this, {x:0, y:0, rotation:0, zIndex:1, border:"none", duration:0.5}); this.style.pointerEvents = 'none'; count++; if(count>=5) gsap.to("#puz-btn", {opacity:1, pointerEvents:"auto"}); }; c.appendChild(p); } }
         function openLetter() { gsap.to('#letter-closed', {opacity:0, scale:0.8, duration:0.5, display:'none'}); document.getElementById('letter-open').classList.remove('hidden'); gsap.from('#letter-open', {opacity:0, y:20, duration:0.8, delay:0.4}); }
@@ -953,9 +1140,9 @@
         }
 
         async function startCarouselSequence() {
-            bgMusic.pause();
-            if(hbdMusic) hbdMusic.play().catch(e => console.log(e));
-            const layer = document.getElementById("carousel-layer");
+    // bgMusic.pause();  <-- Commented out
+    // if(hbdMusic) hbdMusic.play().catch(e => console.log(e)); <-- Commented out
+    const layer = document.getElementById("carousel-layer");
             layer.style.display = "flex";
             gsap.to(layer, {opacity: 1, duration: 1.5});
             init3DCarousel();
@@ -984,8 +1171,6 @@
             gsap.to("#carousel-layer", {opacity: 0, duration: 1.5, onComplete: () => {
                 document.getElementById("carousel-layer").style.display = "none";
                 cancelAnimationFrame(carouselReqID);
-                hbdMusic.pause();
-                bgMusic.play().catch(e => {});
                 nextChapter(); 
             }});
         }
@@ -1087,7 +1272,11 @@
             const screen = document.getElementById('credits-screen');
             screen.style.display = 'flex';
 
-            // 3. Show replay button after credits are done (approx 30 seconds)
+            // 3. START SCROLLING NOW
+            // Add the class that contains the animation to start it instantly
+            document.getElementById('credits-scroll').classList.add('rolling');
+
+            // 4. Show replay button after credits are done (approx 30 seconds)
             setTimeout(() => {
                 document.getElementById('replay-btn').style.opacity = 1;
             }, 30000);
